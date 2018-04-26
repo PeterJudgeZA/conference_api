@@ -46,7 +46,6 @@ class Conference.SI.DOHEventHandler:
     method public void InvokedHandler (input poSender as Progress.Lang.Object,
                                        input poEventArgs as OperationInvocationEventArgs):
         define variable msgBody as JsonObject no-undo.
-        define variable data as JsonObject no-undo.
         define variable record as JsonObject no-undo.
         define variable talks as JsonArray no-undo.
         define variable links as JsonObject no-undo.
@@ -75,10 +74,8 @@ class Conference.SI.DOHEventHandler:
         if poEventArgs:Response:ContentType eq 'application/vnd.conf.talks+json' then
         do:
             assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject)
-                   //data     = msgBody:GetJsonObject('data':u)
                    cnt      = msgBody:GetInteger('count')
                    talks    = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk')
-                   
                    
                    links    = new JsonObject()
                    topRecs  = integer(poEventArgs:Request:URI:GetQueryValue('top'))
@@ -87,8 +84,8 @@ class Conference.SI.DOHEventHandler:
             
             msgBody:Add('links', links).
             links:Add('first', substitute('&1?skip=&2&top=&3', linkBase, 0, topRecs)).
-            links:Add('next', substitute('&1?skip=&2&top=&3', linkBase, skipRecs, topRecs)).
-            links:Add('prev', substitute('&1?skip=&2&top=&3', linkBase, skipRecs + skipRecs, topRecs)).
+            links:Add('next',  substitute('&1?skip=&2&top=&3', linkBase, skipRecs, topRecs)).
+            links:Add('prev',  substitute('&1?skip=&2&top=&3', linkBase, skipRecs + skipRecs, topRecs)).
             links:Add('last',  substitute('&1?skip=-1', linkBase)).
             
             if skipRecs eq 0       then links:SetNull('prev').
