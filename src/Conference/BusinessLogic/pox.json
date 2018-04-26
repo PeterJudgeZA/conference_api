@@ -1,0 +1,138 @@
+{ "talks": [
+    { "links":  {
+          "first": {"href": "/api/web/talks?skip=0&top=5"  },
+          "next":  {"href": "/api/web/talks?skip=5&top=5"  },
+          "self":  {"href": "/api/web/talks?skip=0&top=5" },
+          // first batch, so no "prev"
+          "last":  {"href": "/api/web/talks?skip=86"        }
+    } }, 
+    { "id": "abl-042",
+      "name": " Finding deeper meaning in FOR EACH",
+      "abstract": "Spicy jalapeno bacon andouille",
+      "speaker": "peter.judge",
+      "talk_status": 1,
+      "content_url": null,
+      "links": {
+          "self":    {"href": "/api/web/talks/abl-042"         },
+          "speaker": {"href": "/api/web/speakers/psc-123"      },
+          "times":   {"href": "/api/web/timeslots?talk=abl-042"}
+    } },
+    { "id": "pas-027", "name": "Spin your /WEB"     },
+    { "id": "db-999",  "name": "Up? Down? Does it matter?"}
+  ] }
+
+
+///
+
+
+{
+  "talks": [
+    { "links":  {
+      "first": "/talks?offset=1&recs=5",
+      "next":  "/talks?offset=6&recs=5",
+      "prev":  null,
+      "last":  "/talks?offset=86"
+    } }, {
+      "id": "abl-042",
+      "name": " Finding deeper meaning in FOR EACH",
+      "abstract": "Spicy jalapeno bacon andouille",
+      "speaker": "peter.judge",
+      "talk_status": 1,
+      "content_url": null,
+      "content_type": null,
+      "links": {
+        "self": {"href": "/talks/abl-042"},
+        "speaker": {"href": "/speakers/psc-123"},
+        "times": {"href": "/timeslot/?talk=abl-042"}
+      }
+    },
+    { "id": "pas-027", "name": "Spin your /WEB"     },
+    { "id": "db-999",  "name": "Up? Down? Does it matter?"}
+  ]
+}
+
+
+
+
+{"talks": [
+    { "id": "ABL-042",
+      "name": "Killroy was here?",      
+      "speaker": "peter.judge",
+      "abstract": "Spicy jalapeno bacon andouille tenderloin hock",
+      "talk_status": 1,      
+      "content_url": null, 
+      "content_type": null
+}]}
+
+{
+  "speakerList": [
+    {
+      "id": "abc123",
+      "name": "peter",
+      "bio": "Spicy jalapeno bacon cow andouille tenderloin ham ",
+      "photo": "iVBORw0KGgoAAAANSUhEUgADl7c8AAAAABJRU5ErkJggg==",
+      "url": "https://github.com/PeterJudge-PSC/",
+      "links": {
+        "self": { "href": "/ConferenceSvc/speakers/psc-123" },
+        "talks": {"href": "/ConferenceSvc/talks?speaker=psc-123" },
+        "times": {"href": "/ConferenceSvc/timeslot?speaker=psc-123" }        
+      },
+    }
+  ]
+}
+
+
+HTTP/1.1 200/OK
+Content-Type: application/json
+[assorted headers]
+
+{"speakerList": [
+    {"id": "psc-123",
+      "name": "peter.judge",
+      "bio": "Spicy jalapeno bacon andouille hock.",
+      "photo": "iVBOAAAAABJRU5ErkJggg==",
+      "url": "http://www.progress.com"
+}]}
+
+
+{
+    "_links": {
+        "self": { "href": "/orders" },
+        "curies": [{ "name": "ea", "href": "http://example.com/docs/rels/{rel}", "templated": true }],
+        "next": { "href": "/orders?page=2" },
+        "ea:find": {
+            "href": "/orders{?id}",
+            "templated": true
+        },
+        "ea:admin": [{
+            "href": "/admins/2",
+            "title": "Fred"
+        }, {
+            "href": "/admins/5",
+            "title": "Kate"
+        }]
+    },
+    "currentlyProcessing": 14,
+    "shippedToday": 20,
+    "_embedded": {
+        "ea:order": [{
+            "_links": {
+                "self": { "href": "/orders/123" },
+                "ea:basket": { "href": "/baskets/98712" },
+                "ea:customer": { "href": "/customers/7809" }
+            },
+            "total": 30.00,
+            "currency": "USD",
+            "status": "shipped"
+        }, {
+            "_links": {
+                "self": { "href": "/orders/124" },
+                "ea:basket": { "href": "/baskets/97213" },
+                "ea:customer": { "href": "/customers/12369" }
+            },
+            "total": 20.00,
+            "currency": "USD",
+            "status": "processing"
+        }]
+    }
+}

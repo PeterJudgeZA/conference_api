@@ -1,3 +1,26 @@
+# Progress Developer Studio Files
+.metadata/
+.com.savvion.studio/
+.sharedavm/
+.pct/
+
+
+# Progress ABL Files
+bin/
+temp/
+*.r
+protrace*.*
+procore*.*
+untitled*.*
+
+# ignore database related files
+*.db
+*.b1
+*.d1
+*.lg
+*.lic
+*.lk
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

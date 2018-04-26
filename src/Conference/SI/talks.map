@@ -1,0 +1,228 @@
+{
+    "services": {
+        "talks": {
+            "version": "1.0.0",
+            "operations": {
+                "/{tlk}": {
+                    "GET": {
+                        "contentType": "application/vnd.conf.talks+json",
+                        "statusCode": 200,
+                        "entity": {
+                            "type": "procedure",
+                            "name": "logic/talk/read_talks.p",
+                            "function": "get_filtered_talks",
+                            "arg": [
+                                {
+                                    "ablName": "pFilter",
+                                    "ablType": "CHARACTER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "QUERY", "name": "filter"}
+                                },
+                                {
+                                    "ablName": "pSkipRecs",
+                                    "ablType": "INTEGER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "QUERY","name": "skip"}
+                                },
+                                {
+                                    "ablName": "pTopRecs",
+                                    "ablType": "INTEGER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "QUERY","name": "top"}
+                                },
+                                {
+                                    "ablName": "ttTalk",
+                                    "ablType": "TABLE",
+                                    "ioMode": "OUTPUT",
+                                    "msgElem": {"type": "FIELD","name": "data"}
+                                },
+                                {
+                                    "ablName": "pCount",
+                                    "ablType": "INTEGER",
+                                    "ioMode": "OUTPUT",
+                                    "msgElem": {"type": "FIELD","name": "count"}
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "schemas": {
+                "dsTalk": {
+                    "ttTalk": {
+                        "trackChanges": true,
+                        "indexes": {
+                            "idx1": {
+                                "primary": true,
+                                "unique": true,
+                                "word": false,
+                                "fields": [
+                                    "id"
+                                ]
+                            },
+                            "idx2": {
+                                "primary": false,
+                                "unique": false,
+                                "word": false,
+                                "fields": [
+                                    "speaker"
+                                ]
+                            },
+                            "idx3": {
+                                "primary": false,
+                                "unique": false,
+                                "word": false,
+                                "fields": [
+                                    "talk_status"
+                                ]
+                            }
+                        },
+                        "fields": [
+                            {
+                                "name": "id",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "name",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "speaker",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "abstract",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "talk_status",
+                                "ablType": "Progress.Lang.Object",
+                                "extent": null
+                            },
+                            {
+                                "name": "content_url",
+                                "ablType": "Progress.Lang.Object",
+                                "extent": null
+                            },
+                            {
+                                "name": "content_type",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            }
+                        ]
+                    },
+                    "ttSpeaker": {
+                        "trackChanges": true,
+                        "indexes": {
+                            "idx1": {
+                                "fields": [
+                                    "id"
+                                ],
+                                "primary": true,
+                                "unique": true,
+                                "word": false
+                            },
+                            "idx2": {
+                                "fields": [
+                                    "name"
+                                ],
+                                "primary": false,
+                                "unique": false,
+                                "word": false
+                            }
+                        },
+                        "fields": [
+                            {
+                                "name": "id",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "name",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "bio",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "photo",
+                                "ablType": "BLOB",
+                                "extent": null
+                            },
+                            {
+                                "name": "url",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                        ]
+                    },
+                    "ttTimeslot": {
+                        "trackChanges": true,
+                        "indexes": {
+                            "idx1": {
+                                "fields": [
+                                    "id"
+                                ],
+                                "primary": true,
+                                "unique": true,
+                                "word": false
+                            },
+                            "idx2": {
+                                "fields": [
+                                    "room",
+                                    "start_at"
+                                ],
+                                "primary": false,
+                                "unique": true,
+                                "word": false
+                            },
+                            "idx3": {
+                                "fields": [
+                                    "talk"
+                                ],
+                                "primary": false,
+                                "unique": false,
+                                "word": false
+                            }
+                        },
+                        "fields": [
+                            {
+                                "name": "id",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "talk",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "room",
+                                "ablType": "CHARACTER",
+                                "extent": null
+                            },
+                            {
+                                "name": "start_at",
+                                "ablType": "DATETIME-TZ",
+                                "extent": null
+                            },
+                            {
+                                "name": "duration",
+                                "ablType": "INTEGER",
+                                "extent": null
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
+}
