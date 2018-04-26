@@ -1,0 +1,14 @@
+[${oepas-app}.${oepas-webapp}.WEB]
+handler1 = Conference.SI.TalksHandler    : /speakers/{spkr}/talks/{tlk}
+handler2 = Conference.SI.SpeakersHandler : /speakers/{spkr}
+handler3 = Conference.SI.SpeakersHandler : /speakers
+handler4 = Conference.SI.TalksHandler    : /talks/{tlk}
+handler5 = Conference.SI.TalksHandler    : /talks
+
+
+[${oepas-app}.${oepas-webapp}.WEB]
+handler1 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers/{spkr}/talks/{tlk}
+handler2 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers/{spkr}
+handler3 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers
+handler4 = OpenEdge.Web.DataObject.DataObjectHandler: /talks/{tlk}
+handler5 = OpenEdge.Web.DataObject.DataObjectHandler: /talks

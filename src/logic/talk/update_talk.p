@@ -10,17 +10,15 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
-
 using Progress.Lang.AppError.
 
 {Conference/Shared/talks_dataset.i }
-
 
 /* ***************************  Main Block  ************************** */
 
 /* ***************************  Functions & Procedures  ************************** */
 procedure update_talks:
-    define input parameter table for ttTalk.
+    define input-output parameter table for ttTalk.
     
     define variable updateError as AppError no-undo.
     define buffer bTalk for talk.
@@ -34,8 +32,8 @@ procedure update_talks:
             buffer-copy ttTalk
                         except id talk_status content_url  
                      to bTalk
-                        assign bTalk.talk_status = ttTalk.talk_status:ToString()
-                               bTalk.content_url = ttTalk.content_url:ToString() 
+                        assign bTalk.talk_status = ttTalk.talk_status:ToString() when valid-object(ttTalk.talk_status)
+                               bTalk.content_url = ttTalk.content_url:ToString() when valid-object(ttTalk.content_url)
                                .
         end.
         else
@@ -49,4 +47,3 @@ procedure update_talks:
     if updateError:NumMessages gt 0 then
         return error updateError.
 end procedure .
-

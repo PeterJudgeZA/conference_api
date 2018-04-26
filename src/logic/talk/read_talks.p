@@ -14,6 +14,7 @@
 using Conference.BusinessLogic.TalkStatusEnum.
 using OpenEdge.Net.URI.
 using Progress.Lang.AppError.
+using OpenEdge.Core.String.
 
 {Conference/Shared/talks_dataset.i }
 
@@ -33,16 +34,22 @@ procedure get_filtered_talks:
     
     empty temp-table ttTalk.
     
-    if pFilter eq '':u then
+    if String:IsNullOrEmpty(pFilter) then
         assign pFilter = 'true'.
     
     query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock ').
     query qTalk:query-open().
     
-    if pTopRecs le 0 then
-        assign pTopRecs = query qTalk:num-results.  
+    assign pCount = query qTalk:num-results.
     
-    if pSkipRecs gt 0 then
+    if    pTopRecs le 0 
+       or pTopRecs eq ?
+    then
+        assign pTopRecs = pCount.  
+    
+    if not pSkipRecs eq ? 
+       and pSkipRecs gt 0
+    then
         query qTalk:reposition-forward(pSkipRecs).
     
     get next qTalk.

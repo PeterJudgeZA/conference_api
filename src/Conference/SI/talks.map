@@ -3,7 +3,7 @@
         "talks": {
             "version": "1.0.0",
             "operations": {
-                "/{tlk}": {
+                "/": {
                     "GET": {
                         "contentType": "application/vnd.conf.talks+json",
                         "statusCode": 200,
@@ -70,6 +70,51 @@
                                     "ablType": "CHARACTER",
                                     "ioMode": "OUTPUT",
                                     "msgElem": {"type": "HEADER","name": "Location"}
+                                }
+                            ]
+                        }
+                    }
+                },
+                "/{tlk}": {
+                    "GET": {
+                        "contentType": "application/vnd.conf.talks+json",
+                        "statusCode": 200,
+                        "entity": {
+                            "type": "procedure",
+                            "name": "logic/talk/read_talks.p",
+                            "function": "get_single_talk",
+                            "arg": [
+                                {
+                                    "ablName": "pId",
+                                    "ablType": "CHARACTER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "PATH", "name": "tlk"}
+                                },
+                                {
+                                    "ablName": "ttTalk",
+                                    "ablType": "TABLE",
+                                    "ioMode": "OUTPUT",
+                                    "msgElem": {"type": "FIELD","name": "data"}
+                                }
+                            ]
+                        }
+                    },
+                    "PUT": {
+                        "contentType": "application/vnd.conf.talks+json",
+                        "statusCode": 200,
+                        "entity": {
+                            "type": "procedure",
+                            "name": "logic/talk/update_talk.p",
+                            "function": "update_talks",
+                            "arg": [
+                                {
+                                    "ablName": "ttTalk",
+                                    "ablType": "TABLE",
+                                    "ioMode": "INPUT-OUTPUT",
+                                    "msgElem": [
+                                        {"type": "BODY",  "name": null,   "ioMode": "INPUT"},
+                                        {"type": "FIELD", "name": "data", "ioMode": "OUTPUT"}
+                                    ]
                                 }
                             ]
                         }

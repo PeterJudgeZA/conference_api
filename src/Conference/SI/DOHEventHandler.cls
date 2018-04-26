@@ -57,40 +57,50 @@ class Conference.SI.DOHEventHandler:
         define variable cnt as integer no-undo.
         define variable loop as integer no-undo.
         define variable locationHdr as HttpHeader no-undo.
-        define variable hdrValue as character no-undo.
+        define variable dataValue as character no-undo.
+        define variable chrPos as integer no-undo.
         
         assign appBase  = trim(poEventArgs:Request:WebAppPath, '/':u)  + '/':u
-                            + trim(poEventArgs:Request:TransportPath, '/':u) + '/' 
+                        + trim(poEventArgs:Request:TransportPath, '/':u) + '/' 
                linkBase = appBase + trim(poEventArgs:Request:PathInfo, '/':u)
-               .
+               .    
         if     poEventArgs:Response:StatusCode  eq 201 
            and poEventArgs:Response:HasHeader('Location') 
        then
             assign locationHdr       = poEventArgs:Response:GetHeader('Location')
-                   hdrValue          = linkBase + '/' + locationHdr:Value
-                   locationHdr:Value = hdrValue
+                   dataValue         = linkBase + '/' + locationHdr:Value
+                   locationHdr:Value = dataValue
                    .
         else
         if poEventArgs:Response:ContentType eq 'application/vnd.conf.talks+json' then
         do:
             assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject)
-                   cnt      = msgBody:GetInteger('count')
                    talks    = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk')
-                   
-                   links    = new JsonObject()
-                   topRecs  = integer(poEventArgs:Request:URI:GetQueryValue('top'))
-                   skipRecs = integer(poEventArgs:Request:URI:GetQueryValue('skip'))
                    .
-            
-            msgBody:Add('links', links).
-            links:Add('first', substitute('&1?skip=&2&top=&3', linkBase, 0, topRecs)).
-            links:Add('next',  substitute('&1?skip=&2&top=&3', linkBase, skipRecs, topRecs)).
-            links:Add('prev',  substitute('&1?skip=&2&top=&3', linkBase, skipRecs + skipRecs, topRecs)).
-            links:Add('last',  substitute('&1?skip=-1', linkBase)).
-            
-            if skipRecs eq 0       then links:SetNull('prev').
-            if topRecs le skipRecs then links:SetNull('next').
-            
+            // we're working with a set
+            if lookup('tlk', poEventArgs:Request:PathParameterNames) eq 0 then
+            do:
+                assign links    = new JsonObject()
+                       topRecs  = integer(poEventArgs:Request:URI:GetQueryValue('top'))
+                       skipRecs = integer(poEventArgs:Request:URI:GetQueryValue('skip'))
+                       .
+                if topRecs  eq ? then assign topRecs = 0.
+                if skipRecs eq ? then assign skipRecs = 0.
+                
+                msgBody:Add('links', links).
+                links:Add('first', substitute('&1?skip=&2&4top=&3', linkBase, 0, topRecs, '&')).
+                links:Add('next',  substitute('&1?skip=&2&4top=&3', linkBase, skipRecs, topRecs, '&')).
+                links:Add('prev',  substitute('&1?skip=&2&4top=&3', linkBase, skipRecs + skipRecs, topRecs, '&')).
+                links:Add('last',  substitute('&1?skip=-1', linkBase)).
+                
+                if skipRecs eq 0       then links:SetNull('prev').
+                if topRecs le skipRecs then links:SetNull('next').
+            end.    // set o' data
+            else
+                assign chrPos   = r-index(linkBase, '/')
+                           linkBase = substring(linkBase, 1, chrPos - 1)
+                       .
+            assign cnt = talks:Length.
             do loop = 1 to cnt:
                 assign record = talks:GetJsonObject(loop)
                        links  = new JsonObject()
@@ -98,7 +108,11 @@ class Conference.SI.DOHEventHandler:
                 // add the links here
                 record:Add('links',  links).
                 links:Add('self',    linkBase + '/' + record:GetCharacter('id')).
-                links:Add('speaker', appBase + '/speakers/' + record:GetCharacter('speaker') ).
+                assign dataValue = record:GetCharacter('speaker').
+                if dataValue eq '':u then
+                    links:AddNull('speaker').
+                else
+                    links:Add('speaker', appBase + '/speakers/' +  dataValue).
                 links:Add('times',   appBase + '/timeslots?talk=' + record:GetCharacter('id')).
             end.
         end.    // Talks
