@@ -44,6 +44,35 @@
                                 }
                             ]
                         }
+                    },
+                    "POST": {
+                        "contentType": "application/vnd.conf.talks+json",
+                        "statusCode": 201,
+                        "entity": {
+                            "type": "procedure",
+                            "name": "logic/talk/new_talk.p",
+                            "function": "create_talk",
+                            "arg": [
+                                {
+                                    "ablName": "pStream",
+                                    "ablType": "CHARACTER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "FIELD", "name": "stream"}
+                                },
+                                {
+                                    "ablName": "pName",
+                                    "ablType": "CHARACTER",
+                                    "ioMode": "INPUT",
+                                    "msgElem": {"type": "FIELD","name": "name"}
+                                },
+                                {
+                                    "ablName": "pId",
+                                    "ablType": "CHARACTER",
+                                    "ioMode": "OUTPUT",
+                                    "msgElem": {"type": "HEADER","name": "Location"}
+                                }
+                            ]
+                        }
                     }
                 }
             },
@@ -53,171 +82,70 @@
                         "trackChanges": true,
                         "indexes": {
                             "idx1": {
-                                "primary": true,
-                                "unique": true,
-                                "word": false,
-                                "fields": [
-                                    "id"
-                                ]
+                                "fields": ["id"], 
+                                "primary": true, "unique": true, "word": false
                             },
                             "idx2": {
-                                "primary": false,
-                                "unique": false,
-                                "word": false,
-                                "fields": [
-                                    "speaker"
-                                ]
+                                "fields": ["speaker"],
+                                "primary": false, "unique": false, "word": false
                             },
                             "idx3": {
-                                "primary": false,
-                                "unique": false,
-                                "word": false,
-                                "fields": [
-                                    "talk_status"
-                                ]
+                                "fields": ["talk_status"],
+                                "primary": false, "unique": false, "word": false
                             }
                         },
                         "fields": [
-                            {
-                                "name": "id",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "name",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "speaker",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "abstract",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "talk_status",
-                                "ablType": "Progress.Lang.Object",
-                                "extent": null
-                            },
-                            {
-                                "name": "content_url",
-                                "ablType": "Progress.Lang.Object",
-                                "extent": null
-                            },
-                            {
-                                "name": "content_type",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            }
+                            {"name": "id","ablType": "CHARACTER","extent": null},
+                            {"name": "name","ablType": "CHARACTER","extent": null},
+                            {"name": "speaker","ablType": "CHARACTER","extent": null},
+                            {"name": "abstract","ablType": "CHARACTER","extent": null},
+                            {"name": "talk_status","ablType": "Progress.Lang.Object","extent": null},
+                            {"name": "content_url","ablType": "Progress.Lang.Object","extent": null},
+                            {"name": "content_type","ablType": "CHARACTER","extent": null}
                         ]
                     },
                     "ttSpeaker": {
                         "trackChanges": true,
                         "indexes": {
                             "idx1": {
-                                "fields": [
-                                    "id"
-                                ],
-                                "primary": true,
-                                "unique": true,
-                                "word": false
+                                "fields": ["id"],
+                                "primary": true,"unique": true,"word": false
                             },
                             "idx2": {
-                                "fields": [
-                                    "name"
-                                ],
-                                "primary": false,
-                                "unique": false,
-                                "word": false
+                                "fields": ["name"],
+                                "primary": false,"unique": false,"word": false
                             }
                         },
                         "fields": [
-                            {
-                                "name": "id",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "name",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "bio",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "photo",
-                                "ablType": "BLOB",
-                                "extent": null
-                            },
-                            {
-                                "name": "url",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
+                            {"name": "id","ablType": "CHARACTER","extent": null},
+                            {"name": "name","ablType": "CHARACTER","extent": null},
+                            {"name": "bio","ablType": "CHARACTER","extent": null},
+                            {"name": "photo","ablType": "BLOB","extent": null},
+                            {"name": "url","ablType": "CHARACTER","extent": null}
                         ]
                     },
                     "ttTimeslot": {
                         "trackChanges": true,
                         "indexes": {
                             "idx1": {
-                                "fields": [
-                                    "id"
-                                ],
-                                "primary": true,
-                                "unique": true,
-                                "word": false
+                                "fields": ["id"],
+                                "primary": true, "unique": true, "word": false
                             },
                             "idx2": {
-                                "fields": [
-                                    "room",
-                                    "start_at"
-                                ],
-                                "primary": false,
-                                "unique": true,
-                                "word": false
+                                "fields": ["room", "start_at"],
+                                "primary": false,"unique": true,"word": false
                             },
                             "idx3": {
-                                "fields": [
-                                    "talk"
-                                ],
-                                "primary": false,
-                                "unique": false,
-                                "word": false
+                                "fields": ["talk"],
+                                "primary": false, "unique": false,"word": false
                             }
                         },
                         "fields": [
-                            {
-                                "name": "id",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "talk",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "room",
-                                "ablType": "CHARACTER",
-                                "extent": null
-                            },
-                            {
-                                "name": "start_at",
-                                "ablType": "DATETIME-TZ",
-                                "extent": null
-                            },
-                            {
-                                "name": "duration",
-                                "ablType": "INTEGER",
-                                "extent": null
-                            }
+                            {"name": "id","ablType": "CHARACTER","extent": null},
+                            {"name": "talk","ablType": "CHARACTER","extent": null},
+                            {"name": "room","ablType": "CHARACTER","extent": null},
+                            {"name": "start_at","ablType": "DATETIME-TZ","extent": null},
+                            {"name": "duration","ablType": "INTEGER","extent": null}
                         ]
                     }
                 }

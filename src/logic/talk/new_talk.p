@@ -20,6 +20,7 @@ using Conference.BusinessLogic.TalkStatusEnum.
 /* ***************************  Functions & Procedures  ************************** */
 procedure create_talk:
     define input  parameter pStream as character no-undo.
+    define input  parameter pName as character no-undo.
     define output parameter pId as character no-undo.
     
     define buffer bTalk for talk. 
@@ -28,6 +29,7 @@ procedure create_talk:
     create bTalk.
     assign pId               = substitute('&1-&2', pStream, string(next-value(seq_name_cnt), '999'))
            bTalk.id          = pId
+           bTalk.name        = pName
            bTalk.talk_status = TalkStatusEnum:Submitted:ToString()
            .
     // If success, a new talk-id is returned. If failure, an error thrown

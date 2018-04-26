@@ -17,6 +17,7 @@ using OpenEdge.Web.DataObject.HandlerErrorEventArgs.
 using OpenEdge.Web.DataObject.OperationInvocationEventArgs.
 using Progress.Json.ObjectModel.JsonArray.
 using Progress.Json.ObjectModel.JsonObject.
+using OpenEdge.Net.HTTP.HttpHeader.
 
 class Conference.SI.DOHEventHandler: 
     /* ciorcular dep to cheat death aka GC */
@@ -56,15 +57,28 @@ class Conference.SI.DOHEventHandler:
         define variable topRecs as integer no-undo  initial 0.
         define variable cnt as integer no-undo.
         define variable loop as integer no-undo.
+        define variable locationHdr as HttpHeader no-undo.
+        define variable hdrValue as character no-undo.
         
+        assign appBase  = trim(poEventArgs:Request:WebAppPath, '/':u)  + '/':u
+                            + trim(poEventArgs:Request:TransportPath, '/':u) + '/' 
+               linkBase = appBase + trim(poEventArgs:Request:PathInfo, '/':u)
+               .
+        if     poEventArgs:Response:StatusCode  eq 201 
+           and poEventArgs:Response:HasHeader('Location') 
+       then
+            assign locationHdr       = poEventArgs:Response:GetHeader('Location')
+                   hdrValue          = linkBase + '/' + locationHdr:Value
+                   locationHdr:Value = hdrValue
+                   .
+        else
         if poEventArgs:Response:ContentType eq 'application/vnd.conf.talks+json' then
         do:
             assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject)
-                   data     = msgBody:GetJsonObject('data':u)
+                   //data     = msgBody:GetJsonObject('data':u)
                    cnt      = msgBody:GetInteger('count')
-                   appBase  = trim(poEventArgs:Request:WebAppPath, '/':u)  + '/':u
-                            + trim(poEventArgs:Request:TransportPath, '/':u) + '/' 
-                   linkBase = appBase + trim(poEventArgs:Request:PathInfo, '/':u)
+                   talks    = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk')
+                   
                    
                    links    = new JsonObject()
                    topRecs  = integer(poEventArgs:Request:URI:GetQueryValue('top'))
