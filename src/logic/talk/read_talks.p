@@ -12,15 +12,30 @@
 /* ***************************  Definitions  ************************** */
 
 using Conference.BusinessLogic.TalkStatusEnum.
+using OpenEdge.Core.Assert.
+using OpenEdge.Core.String.
 using OpenEdge.Net.URI.
 using Progress.Lang.AppError.
-using OpenEdge.Core.String.
+using logic.FilterParams.
 
 {Conference/Shared/talks_dataset.i }
 
 /* ***************************  Main Block  ************************** */
 
 /* ***************************  Functions & Procedures  ************************** */
+procedure read_param_filter:
+    define input parameter pParams as FilterParams no-undo.
+    define output parameter table for ttTalk.
+    define output parameter pCount as integer no-undo.
+    
+    Assert:NotNull(pParams, 'Filter params').
+    run get_filtered_talks (pParams:Where,
+                            pParams:SkipRecs,
+                            pParams:TopRecs,
+                            output table ttTalk,
+                            output pCount).
+end procedure.
+
 procedure get_filtered_talks:
     define input  parameter pFilter as character no-undo.
     define input  parameter pSkipRecs as integer no-undo.
@@ -28,9 +43,8 @@ procedure get_filtered_talks:
     define output parameter table for ttTalk.
     define output parameter pCount as integer no-undo.
     
-    define variable cnt as integer no-undo.
     define buffer bTalk for talk.
-    define query qTalk for bTalk.
+    define query qTalk for bTalk scrolling.
     
     empty temp-table ttTalk.
     
@@ -40,30 +54,28 @@ procedure get_filtered_talks:
     query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock ').
     query qTalk:query-open().
     
-    assign pCount = query qTalk:num-results.
-    
     if    pTopRecs le 0 
        or pTopRecs eq ?
     then
-        assign pTopRecs = pCount.  
+        assign pTopRecs = query qTalk:num-results.  
     
-    if not pSkipRecs eq ? 
-       and pSkipRecs gt 0
-    then
-        query qTalk:reposition-forward(pSkipRecs).
+    if pSkipRecs eq ? then
+        assign pSkipRecs =  0.
+    
+    query qTalk:reposition-forward(pSkipRecs).
     
     get next qTalk.
     do while     available bTalk
-             and cnt le pTopRecs
+             and pCount le pTopRecs
     :
         create ttTalk.
         buffer-copy bTalk
                     except talk_status content_url  
                  to ttTalk
                     assign ttTalk.talk_status = TalkStatusEnum:GetEnum(bTalk.talk_status)
-                           ttTalk.content_url = URI:Parse(bTalk.content_url)
+                           ttTalk.content_url = URI:Parse(bTalk.content_url)                when bTalk.content_url ne ''
                            
-                           cnt                = cnt + 1.
+                           pCount                = pCount + 1.
         get next qTalk.
     end.
     
@@ -88,7 +100,7 @@ procedure get_single_talk:
                     except talk_status content_url  
                  to ttTalk
                     assign ttTalk.talk_status = TalkStatusEnum:GetEnum(bTalk.talk_status)
-                           ttTalk.content_url = URI:Parse(bTalk.content_url) 
+                           ttTalk.content_url = URI:Parse(bTalk.content_url)              when bTalk.content_url ne ''
                            .
     end.
     else

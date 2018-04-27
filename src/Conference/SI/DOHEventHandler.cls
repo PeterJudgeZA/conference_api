@@ -12,15 +12,19 @@
 block-level on error undo, throw.
 
 using Conference.SI.DOHEventHandler.
+using Conference.SI.FilterParamArgumentWriter.
+using OpenEdge.Net.HTTP.HttpHeader.
 using OpenEdge.Web.DataObject.DataObjectHandler.
 using OpenEdge.Web.DataObject.HandlerErrorEventArgs.
 using OpenEdge.Web.DataObject.OperationInvocationEventArgs.
+using OpenEdge.Web.DataObject.Writer.ArgumentValueWriterRegistry.
 using Progress.Json.ObjectModel.JsonArray.
+using Progress.Json.ObjectModel.JsonDataType.
 using Progress.Json.ObjectModel.JsonObject.
-using OpenEdge.Net.HTTP.HttpHeader.
+using logic.FilterParams.
 
 class Conference.SI.DOHEventHandler: 
-    /* ciorcular dep to cheat death aka GC */
+    /* circular dep to cheat death aka GC */
     define variable oCheat as DOHEventHandler no-undo.
     
     constructor public DOHEventHandler():
@@ -28,6 +32,8 @@ class Conference.SI.DOHEventHandler:
         
         DataObjectHandler:Invoked:Subscribe(InvokedHandler).
         DataObjectHandler:OperationError:Subscribe(OperationErrorHandler).
+        
+        ArgumentValueWriterRegistry:Registry:Put(get-class(FilterParams):TypeName, get-class(FilterParamArgumentWriter)).
     end constructor.
 
     /* Event published when an error is encountered 
@@ -49,6 +55,7 @@ class Conference.SI.DOHEventHandler:
         define variable record as JsonObject no-undo.
         define variable talks as JsonArray no-undo.
         define variable links as JsonObject no-undo.
+        define variable href as JsonObject no-undo.
         define variable speakerName as character no-undo.
         define variable appBase as character no-undo.
         define variable linkBase as character no-undo.
@@ -74,9 +81,18 @@ class Conference.SI.DOHEventHandler:
         else
         if poEventArgs:Response:ContentType eq 'application/vnd.conf.talks+json' then
         do:
-            assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject)
-                   talks    = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk')
-                   .
+            assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject).
+ 
+            if     msgBody:Has('data')
+               and msgBody:GetType('data') eq JsonDataType:OBJECT
+            then
+                assign talks = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk').
+            else
+            if     msgBody:Has('ttTalk')
+               and msgBody:GetType('ttTalk') eq JsonDataType:ARRAY
+            then
+                assign talks = msgBody:GetJsonArray('ttTalk').
+            
             // we're working with a set
             if lookup('tlk', poEventArgs:Request:PathParameterNames) eq 0 then
             do:
@@ -84,17 +100,31 @@ class Conference.SI.DOHEventHandler:
                        topRecs  = integer(poEventArgs:Request:URI:GetQueryValue('top'))
                        skipRecs = integer(poEventArgs:Request:URI:GetQueryValue('skip'))
                        .
-                if topRecs  eq ? then assign topRecs = 0.
+                if topRecs  eq ? then assign topRecs  = 0.
                 if skipRecs eq ? then assign skipRecs = 0.
                 
                 msgBody:Add('links', links).
-                links:Add('first', substitute('&1?skip=&2&4top=&3', linkBase, 0, topRecs, '&')).
-                links:Add('next',  substitute('&1?skip=&2&4top=&3', linkBase, skipRecs, topRecs, '&')).
-                links:Add('prev',  substitute('&1?skip=&2&4top=&3', linkBase, skipRecs + skipRecs, topRecs, '&')).
-                links:Add('last',  substitute('&1?skip=-1', linkBase)).
+                assign href = new JsonObject().
+                links:Add('first', href).
+                href:Add('href', substitute('&1?skip=&2&4top=&3', linkBase, 0, topRecs, '&')).
                 
-                if skipRecs eq 0       then links:SetNull('prev').
-                if topRecs le skipRecs then links:SetNull('next').
+                assign href = new JsonObject().
+                links:Add('next',  href).
+                if topRecs le skipRecs then
+                    href:AddNull('href').
+                else
+                    href:Add('href', substitute('&1?skip=&2&4top=&3', linkBase, skipRecs, topRecs, '&')).
+                
+                assign href = new JsonObject().
+                links:Add('prev',  href).
+                if skipRecs eq 0 then
+                    href:AddNull('href').
+                else
+                    href:Add('href', substitute('&1?skip=&2&4top=&3', linkBase, skipRecs + skipRecs, topRecs, '&')).
+                
+                assign href = new JsonObject().
+                links:Add('last',  href).
+                href:Add('href', substitute('&1?skip=-1', linkBase)).
             end.    // set o' data
             else
                 assign chrPos   = r-index(linkBase, '/')
@@ -106,14 +136,22 @@ class Conference.SI.DOHEventHandler:
                        links  = new JsonObject()
                        .
                 // add the links here
-                record:Add('links',  links).
-                links:Add('self',    linkBase + '/' + record:GetCharacter('id')).
-                assign dataValue = record:GetCharacter('speaker').
+                record:Add('links', links).
+                assign href = new JsonObject().
+                links:Add('self', href).
+                href:Add('href', linkBase + '/' + record:GetCharacter('id')).
+                assign dataValue = record:GetCharacter('speaker')
+                       href      = new JsonObject()
+                       .
+                links:Add('speaker', href).
                 if dataValue eq '':u then
-                    links:AddNull('speaker').
+                    href:AddNull('href').
                 else
-                    links:Add('speaker', appBase + '/speakers/' +  dataValue).
-                links:Add('times',   appBase + '/timeslots?talk=' + record:GetCharacter('id')).
+                    href:Add('href', appBase + '/speakers/' +  dataValue).
+                
+                assign href = new JsonObject().
+                links:Add('times', href).
+                href:Add('href',  appBase + '/timeslots?talk=' + record:GetCharacter('id')).
             end.
         end.    // Talks
     end method.
