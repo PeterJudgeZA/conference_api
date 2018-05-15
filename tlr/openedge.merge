@@ -1,3 +1,6 @@
+[AppServer.Agent.${oepas-app}]
+sessionStartupProc=session_start.p
+
 [${oepas-app}.${oepas-webapp}.WEB]
 handler1 = Conference.SI.TalksHandler    : /speakers/{spkr}/talks/{tlk}
 handler2 = Conference.SI.SpeakersHandler : /speakers/{spkr}
@@ -12,3 +15,4 @@ handler2 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers/{spkr}
 handler3 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers
 handler4 = OpenEdge.Web.DataObject.DataObjectHandler: /talks/{tlk}
 handler5 = OpenEdge.Web.DataObject.DataObjectHandler: /talks
+

@@ -17,8 +17,9 @@ using OpenEdge.Core.String.
 using OpenEdge.Net.URI.
 using Progress.Lang.AppError.
 using logic.FilterParams.
+using logic.FilterResponse.
 
-{Conference/Shared/talks_dataset.i }
+{logic/shared/talks_dataset.i }
 
 /* ***************************  Main Block  ************************** */
 
@@ -29,11 +30,34 @@ procedure read_param_filter:
     define output parameter pCount as integer no-undo.
     
     Assert:NotNull(pParams, 'Filter params').
+    
     run get_filtered_talks (pParams:Where,
                             pParams:SkipRecs,
                             pParams:TopRecs,
                             output table ttTalk,
                             output pCount).
+end procedure.
+
+procedure read_param_filter_response:
+    define input parameter pParams as FilterParams no-undo.
+    define output parameter table for ttTalk.
+    define output parameter pResp as FilterResponse no-undo.
+    
+    define variable cnt as integer no-undo.
+    
+    Assert:NotNull(pParams, 'Filter params').
+    
+    run get_filtered_talks (pParams:Where,
+                            pParams:SkipRecs,
+                            pParams:TopRecs,
+                            output table ttTalk,
+                            output cnt).
+    
+    assign pResp             = new FilterResponse()
+           pResp:NumRecs     = cnt
+           pResp:IsLastBatch = false
+           pResp:TableName   = buffer ttTalk:serialize-name
+           .
 end procedure.
 
 procedure get_filtered_talks:
@@ -50,6 +74,8 @@ procedure get_filtered_talks:
     
     if String:IsNullOrEmpty(pFilter) then
         assign pFilter = 'true'.
+    
+    assign pFilter = left-trim(pFilter, 'where ').
     
     query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock ').
     query qTalk:query-open().

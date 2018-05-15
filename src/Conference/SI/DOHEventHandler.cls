@@ -86,12 +86,12 @@ class Conference.SI.DOHEventHandler:
             if     msgBody:Has('data')
                and msgBody:GetType('data') eq JsonDataType:OBJECT
             then
-                assign talks = msgBody:GetJsonObject('data':u):GetJsonArray('ttTalk').
+                assign talks = msgBody:GetJsonObject('data':u):GetJsonArray('talks').
             else
-            if     msgBody:Has('ttTalk')
-               and msgBody:GetType('ttTalk') eq JsonDataType:ARRAY
+            if     msgBody:Has('talks')
+               and msgBody:GetType('talks') eq JsonDataType:ARRAY
             then
-                assign talks = msgBody:GetJsonArray('ttTalk').
+                assign talks = msgBody:GetJsonArray('talks').
             
             // we're working with a set
             if lookup('tlk', poEventArgs:Request:PathParameterNames) eq 0 then

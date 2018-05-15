@@ -28,7 +28,7 @@ using Progress.Json.ObjectModel.JsonObject from propath.
 using Progress.Lang.Object from propath.
 
 class Conference.SI.TalksHandler inherits WebHandler:
-    {Conference/Shared/talks_dataset.i &ACCESS-LEVEL=private}
+    {logic/shared/talks_dataset.i &ACCESS-LEVEL=private}
      
     define variable ttTalk as handle no-undo.
     method override protected integer HandleNotAllowedMethod( input poRequest as IWebRequest ):
@@ -62,6 +62,8 @@ class Conference.SI.TalksHandler inherits WebHandler:
         define variable hTalks as handle no-undo.
         
         resp = new OpenEdge.Web.WebResponse().
+        
+        // http://localhost:9930/api/web/talks/ABL-013
         
         if pReq:PathInfo eq '/talks/' then
         do:

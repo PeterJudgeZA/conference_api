@@ -11,14 +11,18 @@
   ----------------------------------------------------------------------*/
 block-level on error undo, throw.
 
-using OpenEdge.Web.DataObject.Writer.ArgumentValueWriter.
+using Ccs.Common.Support.ICharacterHolder.
+using Ccs.Common.Support.ILongcharHolder.
+using OpenEdge.Web.DataObject.Writer.ObjectValueWriter.
+using Progress.Json.ObjectModel.JsonObject.
 using logic.FilterParams.
-using OpenEdge.Core.KeyValuePair.
+using Progress.Json.ObjectModel.ObjectModelParser.
 
-class Conference.SI.FilterParamArgumentWriter inherits ArgumentValueWriter: 
+class Conference.SI.FilterParamArgumentWriter inherits ObjectValueWriter:
 
     constructor public FilterParamArgumentWriter():
-        super (get-class(FilterParams)).
+         //super (get-class(FilterParams)).
+         super().
     end constructor.
     
     method override public void Open():
@@ -31,43 +35,29 @@ class Conference.SI.FilterParamArgumentWriter inherits ArgumentValueWriter:
     end method.
     
     method override public void Write(input pData as Progress.Lang.Object ):
-        define variable kvp as KeyValuePair no-undo.
+        define variable jsonFilter as JsonObject no-undo.
+        
         case true:
             when not valid-object(pData) then
                 return.
-            when type-of(pData, KeyValuePair) then
-            do:
-                assign kvp = cast(pData, KeyValuePair).
+            
+            when type-of(pData, ILongcharHolder) then
+                assign jsonFilter = cast((new ObjectModelParser()):Parse(cast(pData, ILongcharHolder):Value),
+                                         JsonObject). 
                 
-                case kvp:Key:ToString():
-                    when 'tlk' or
-                    when 'spkr' then
-                        assign cast(this-object:Value, FilterParams):Where = substitute('id = "&1"', 
-                                                                                    kvp:Value:ToString()).
-                    
-                    when '$top' or 
-                    when 'top' then
-                        assign cast(this-object:Value, FilterParams):TopRecs = integer(kvp:Value:ToString()).
-                    
-                    when '$skip' or 
-                    when 'skip' then
-                        assign cast(this-object:Value, FilterParams):SkipRecs = integer(kvp:Value:ToString()).
-                    
-                    when '$filter' or 
-                    when 'filter' then
-                        assign cast(this-object:Value, FilterParams):Where = kvp:Value:ToString().
-                    
-                    when '$select' then
-                        assign cast(this-object:Value, FilterParams):FieldList = kvp:Value:ToString().
-                        
-                    when '$sortby' or
-                    when 'sorty' or
-                    when 'by' then
-                        assign cast(this-object:Value, FilterParams):SortBy = kvp:Value:ToString().
-                end case.
-            end.
+            when type-of(pData, ICharacterHolder) then
+                assign jsonFilter = cast((new ObjectModelParser()):Parse(cast(pData, ICharacterHolder):Value),
+                                         JsonObject). 
+                
+            when type-of(pData, JsonObject) then
+                assign jsonFilter = cast(pData, JsonObject).
+                
+            otherwise
+                super:Write(pData).
         end case.
         
+        if not valid-object(jsonFilter) then
+            return.        
     end method.
-
+    
 end class.

@@ -25,3 +25,5 @@ ServiceRegistry:RegisterAllFromFolder(substitute('&1/openedge', os-getenv('CATAL
 
 // sets up the handler for events from the DOH
 new DOHEventHandler().
+
+/* EOF */

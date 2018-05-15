@@ -16,5 +16,6 @@ enum Conference.BusinessLogic.TalkStatusEnum :
                 Accepted
                 Rejected
                 Scheduled
+                Cancelled
                 .
 end enum.

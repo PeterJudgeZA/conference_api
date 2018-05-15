@@ -10,13 +10,40 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
+using Conference.BusinessLogic.TalkStatusEnum.
+using OpenEdge.Core.Assert.
 using Progress.Lang.AppError.
 
-{Conference/Shared/talks_dataset.i }
+{logic/shared/talks_dataset.i }
 
 /* ***************************  Main Block  ************************** */
 
 /* ***************************  Functions & Procedures  ************************** */
+procedure set_talk_status:
+    define input parameter pTalk as character no-undo.
+    define input parameter pStatus as TalkStatusEnum no-undo.
+    
+    define buffer bTalk for talk.
+    define buffer bSlot for timeslot.
+    
+    Assert:NotNullOrEmpty(pTalk, 'Talk id').
+    
+    find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
+    if available bTalk then
+    case pStatus:
+        // if we have any scheduled talks, we cannot cancel move off the existing status
+        when TalkStatusEnum:Cancelled or
+        when TalkStatusEnum:Rejected or
+        when TalkStatusEnum:Accepted then
+            if not can-find(first bSlot where bSlot.talk eq bTalk.id) then
+                assign bTalk.talk_status = pStatus:ToString().
+        otherwise 
+            assign bTalk.talk_status = pStatus:ToString().
+    end case.
+    else
+        return error new AppError(substitute('Talk &1 not found', pTalk), 0).
+end procedure.
+
 procedure update_talks:
     define input-output parameter table for ttTalk.
     
@@ -46,4 +73,33 @@ procedure update_talks:
     
     if updateError:NumMessages gt 0 then
         return error updateError.
-end procedure .
+end procedure.
+
+procedure cancel_talk:
+    define input  parameter pTalk as character no-undo.
+    
+    define variable updateError as AppError no-undo.
+    
+    define buffer bTalk for talk.
+    define buffer bSlot for timeslot.
+    
+    assign updateError = new AppError().
+    
+    find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
+    if available bTalk then
+    do:
+        assign bTalk.talk_status = TalkStatusEnum:Cancelled:ToString().
+        for each bSlot where bSlot.talk eq bTalk.id exclusive-lock:
+            delete bSlot.
+            
+            catch e as Progress.Lang.Error:
+                updateError:AddMessage(substitute('Update timeslot error: &1', e:GetMessage(1)), 0).
+            end catch.
+        end.
+    end.
+    else
+        updateError:AddMessage(substitute('Talk &1 not found', pTalk), 0).
+    
+    if updateError:NumMessages gt 0 then
+        return error updateError.
+end procedure.

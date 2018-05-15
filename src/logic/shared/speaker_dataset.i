@@ -1,3 +1,4 @@
+&if false &then
 /** This is free and unencumbered software released into the public domain.
     Anyone is free to copy, modify, publish, use, compile, sell, or
     distribute this software, either in source code form or as a compiled
@@ -9,13 +10,13 @@
     Author(s)   : pjudge
     Notes       :
   ----------------------------------------------------------------------*/
-/* ***************************  Definitions  ************************** */
+&endif
 define {&ACCESS-LEVEL} temp-table ttSpeaker no-undo before-table btSpeaker
         field id as character
         field name as character
         field bio as character
-        field photo as blob
-        field url as character
+        field photo as blob serialize-hidden
+        field url as Progress.Lang.Object       // OpenEdge.Net.HTTP.URI
         index idx1 as primary unique id
         index idx2 name.
 

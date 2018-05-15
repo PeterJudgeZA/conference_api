@@ -6,11 +6,14 @@
 /*------------------------------------------------------------------------
     File        : FilterParams
     Author(s)   : pjudge
-    Notes       : 
+    Notes       : Input parameters for filtering a table
   ----------------------------------------------------------------------*/
 block-level on error undo, throw.
 
+using logic.FilterParams.
+
 class logic.FilterParams:
+    define public property TableName as character no-undo get. set.
     define public property TopRecs as integer no-undo get. set.
     define public property SkipRecs as integer no-undo get. set.
     define public property Where as character no-undo get. set.
@@ -21,4 +24,19 @@ class logic.FilterParams:
         return substitute('where &1 by &2 field-list &3 [top:&4 skip:&5]',
                     this-object:Where, SortBy, FieldList, TopRecs, SkipRecs).
     end method.    
+    
+    method static public character BuildQueryString(input pFilter as FilterParams, input dataset-handle pDataset):
+        define variable queryString as character no-undo.
+        define variable buffer as handle no-undo.
+        
+        //find table by name from TableName
+        //find table by serialize-name from TableName
+        
+        // for fields in WHERE
+            //find by name 
+            //find by serialize-name
+        
+        return queryString.
+    end method.
+    
 end class.

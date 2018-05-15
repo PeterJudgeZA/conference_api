@@ -12,8 +12,9 @@
 /* ***************************  Definitions  ************************** */
 
 using Conference.BusinessLogic.TalkStatusEnum.
+using OpenEdge.Core.Assert.
 
-{Conference/Shared/talks_dataset.i }
+{logic/shared/talks_dataset.i }
 
 /* ***************************  Main Block  ************************** */
 
@@ -24,6 +25,9 @@ procedure create_talk:
     define output parameter pId as character no-undo.
     
     define buffer bTalk for talk. 
+    
+    Assert:NotNullOrEmpty(pStream, 'Talk stream').
+    Assert:NotNullOrEmpty(pName, 'Talk name').
     
     // creates a talk, sets default values.
     create bTalk.

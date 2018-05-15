@@ -1,0 +1,10 @@
+ADD SEQUENCE "seq_name_cnt"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+
+.
+PSC
+cpstream=UTF-8
+.
+0000000083

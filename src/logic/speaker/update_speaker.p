@@ -10,15 +10,54 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
-{Conference/Shared/speaker_dataset.i }
 
+using Progress.Lang.AppError.
+
+{logic/shared/speaker_dataset.i }
 
 /* ***************************  Main Block  ************************** */
 procedure update_speaker:
     define input parameter table for ttSpeaker.
-end procedure .
+    
+    define variable updateError as AppError no-undo.
+    define buffer bSpeaker for Speaker.
+    
+    assign updateError = new AppError().
+    for each ttSpeaker
+        transaction:
+        find bSpeaker where bSpeaker.id eq ttSpeaker.id exclusive-lock no-error.
+        if available bSpeaker then
+        do:
+            buffer-copy ttSpeaker
+                        except id url 
+                     to bSpeaker
+                        assign bSpeaker.url = ttSpeaker.url:ToString() when valid-object(ttSpeaker.url).
+        end.
+        else
+            updateError:AddMessage(substitute('Speaker &1 not found', ttSpeaker.id), 0).
+        
+        catch e as Progress.Lang.Error:
+            updateError:AddMessage(substitute('Update error: &1', e:GetMessage(1)), 0).
+        end catch.
+    end.
+    
+    if updateError:NumMessages gt 0 then
+        return error updateError.
+end procedure.
 
 procedure update_pic:
     define input parameter pId as character.
     define input parameter pPhoto as memptr no-undo.
+    
+    define buffer bSpeaker for speaker.
+    
+    find bSpeaker where bSpeaker.id eq pId exclusive-lock no-error.
+    if available bSpeaker then
+        copy-lob from pPhoto to bSpeaker.photo.
+    else
+        return error new AppError(substitute('Speaker &1 not found', ttSpeaker.id), 0).
+    
+    catch e as Progress.Lang.Error:
+        return error new AppError(substitute('Update error: &1', e:GetMessage(1)), 0).
+    end catch.
 end procedure .

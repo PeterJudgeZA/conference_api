@@ -16,7 +16,7 @@ using OpenEdge.BusinessLogic.BusinessEntity from propath.
 using Progress.Lang.Object from propath.
 
 class Conference.BusinessLogic.TalkBE inherits BusinessEntity: 
-    {Conference/Shared/talks_dataset.i &ACCESS-LEVEL=private}
+    {logic/shared/talks_dataset.i &ACCESS-LEVEL=private}
     
     define data-source srcTalk for Talk.
     define data-source srcSpeaker for Speaker.
@@ -40,8 +40,36 @@ class Conference.BusinessLogic.TalkBE inherits BusinessEntity:
                .
     end constructor.
     
+    
+    method override protected void CreateData( input-output DATASET-HANDLE hDataSet ):
+        
+//        super:CreateData(input-output DATASET-HANDLE hDataSet).
+
+        run logic/talk/new_talk.p (...).
+
+    end method.
+
+    method override protected void DeleteData( input-output DATASET-HANDLE hDataSet ):
+        
+        super:DeleteData(input-output DATASET-HANDLE hDataSet).
+
+    end method.
+
+
+    method override protected void ReadData( input cFilter as character, output DATASET-HANDLE hDataSet):
+        
+        super:ReadData(input cFilter, input hBuffer).
+
+    end method.
+
     method public void ScheduleTalk(input pTalk as character,
                                     input pTimelot as character):
+    end method.
+
+    method override protected void UpdateData( input-output DATASET-HANDLE hDataSet ):
+        
+        super:UpdateData(input-output DATASET-HANDLE hDataSet).
+
     end method.
     
     /*
