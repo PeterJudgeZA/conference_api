@@ -25,3 +25,16 @@ procedure get_speaker_name:
     if available bSpeaker then
         assign pName = bSpeaker.name.
 end procedure.
+
+procedure get_speaker_pic:
+    define input  parameter pId as character no-undo.
+    define output parameter pPic as memptr.
+    
+    define buffer bSpeaker for speaker.
+    
+    find bSpeaker where bSpeaker.id eq pid no-lock no-error.
+    if available bSpeaker then
+        copy-lob bSpeaker.photo to pPic.
+    else
+        return error new AppError(substitute('Speaker &1 not found', pId), 0).
+end procedure.
