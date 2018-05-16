@@ -7,7 +7,7 @@ This repo contains examples of ABL REST services for "Conference API" that's use
 All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8830/api/'
 
 ### Talks
-These URI's are handled by the `Conference.SI.TalksWebHandler' mapped in `openedge.properties`
+These URI's are handled by the `Conference.SI.TalksWebHandler` mapped in `openedge.properties`
     handler<n>=Conference.SI.TalksWebHandler: <uri> 
 where
     <n> is a sequential, contiguous integer value
@@ -27,7 +27,7 @@ web/talks/streams | GET | n/a | n/a | logic/talk/streams.p:list_streams
 web/talks/{talk-id}/schedule | GET | n/a | n/a| logic/talk/list_talk_schedule.p:get_schedule
 
 ### Speakers
-These URI's are handled by the `Conference.SI.SpeakersWebHandler' mapped in `openedge.properties`
+These URI's are handled by the `Conference.SI.SpeakersWebHandler` mapped in `openedge.properties`
     handler<n>=Conference.SI.SpeakersWebHandler: <uri> 
 where
     <n> is a sequential, contiguous integer value

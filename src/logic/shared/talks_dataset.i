@@ -18,7 +18,7 @@ define {&ACCESS-LEVEL} temp-table ttTalk no-undo before-table btTalk
     field abstract as character
     field talk_status as character 
     field content_url as character
-    field content_type as character                 // mime-type
+    field content_type as character                 // mime-type (PDF, Powerpoint etc)
     index idx1 as primary unique id
     index idx2 speaker
     index idx3 talk_status
