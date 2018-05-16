@@ -29,9 +29,8 @@ procedure update_speaker:
         if available bSpeaker then
         do:
             buffer-copy ttSpeaker
-                        except id url 
-                     to bSpeaker
-                        assign bSpeaker.url = ttSpeaker.url:ToString() when valid-object(ttSpeaker.url).
+                        except id 
+                     to bSpeaker.
         end.
         else
             updateError:AddMessage(substitute('Speaker &1 not found', ttSpeaker.id), 0).

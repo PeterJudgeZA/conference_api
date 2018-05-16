@@ -5,7 +5,7 @@
     binary, for any purpose, commercial or non-commercial, and by any
     means.  **/
 /*------------------------------------------------------------------------
-    File        : speaker_dataset.i
+    File        : logic/shared/speaker_dataset.i
     Description : 
     Author(s)   : pjudge
     Notes       :
@@ -16,7 +16,7 @@ define {&ACCESS-LEVEL} temp-table ttSpeaker no-undo before-table btSpeaker
         field name as character
         field bio as character
         field photo as blob serialize-hidden
-        field url as Progress.Lang.Object       // OpenEdge.Net.HTTP.URI
+        field url as character
         index idx1 as primary unique id
         index idx2 name.
 

@@ -53,11 +53,10 @@ procedure get_filtered_speakers:
     :
         create ttSpeaker.
         buffer-copy bSpeaker
-                    except photo url
-                 to ttSpeaker
-                    assign ttSpeaker.url = URI:Parse(bSpeaker.url) when bSpeaker.url ne ''
-                           
-                           pCount                = pCount + 1.
+                    except photo
+                 to ttSpeaker.
+        
+        assign pCount = pCount + 1.
         get next qSpeaker.
     end.
     
@@ -79,10 +78,8 @@ procedure get_single_speaker:
         
         create ttSpeaker.
         buffer-copy bSpeaker
-                    except photo url
-                 to ttSpeaker
-                    assign ttSpeaker.url = URI:Parse(bSpeaker.url) when bSpeaker.url ne ''
-                 .
+                    except photo
+                 to ttSpeaker.
     end.
     else
         return error new AppError(substitute('Speaker &1 not found', pId), 0).

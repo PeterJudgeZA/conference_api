@@ -80,13 +80,13 @@ procedure get_filtered_talks:
     query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock ').
     query qTalk:query-open().
     
-    if    pTopRecs le 0 
+    if    pTopRecs le 0
        or pTopRecs eq ?
     then
         assign pTopRecs = query qTalk:num-results.  
     
     if pSkipRecs eq ? then
-        assign pSkipRecs =  0.
+        assign pSkipRecs = 0.
     
     query qTalk:reposition-forward(pSkipRecs).
     
@@ -95,13 +95,9 @@ procedure get_filtered_talks:
              and pCount le pTopRecs
     :
         create ttTalk.
-        buffer-copy bTalk
-                    except talk_status content_url  
-                 to ttTalk
-                    assign ttTalk.talk_status = TalkStatusEnum:GetEnum(bTalk.talk_status)
-                           ttTalk.content_url = URI:Parse(bTalk.content_url)                when bTalk.content_url ne ''
-                           
-                           pCount                = pCount + 1.
+        buffer-copy bTalk to ttTalk.
+        
+        assign pCount = pCount + 1.
         get next qTalk.
     end.
     
@@ -122,12 +118,7 @@ procedure get_single_talk:
         empty temp-table ttTalk.
         
         create ttTalk.
-        buffer-copy bTalk
-                    except talk_status content_url  
-                 to ttTalk
-                    assign ttTalk.talk_status = TalkStatusEnum:GetEnum(bTalk.talk_status)
-                           ttTalk.content_url = URI:Parse(bTalk.content_url)              when bTalk.content_url ne ''
-                           .
+        buffer-copy bTalk to ttTalk.
     end.
     else
         return error new AppError(substitute('Talk &1 not found', pId), 0).

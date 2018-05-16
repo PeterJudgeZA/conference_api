@@ -5,7 +5,7 @@
     binary, for any purpose, commercial or non-commercial, and by any
     means.  **/
 /*------------------------------------------------------------------------
-    File        : talks_dataset.i
+    File        : logic/shared/talks_dataset.i
     Description : 
     Author(s)   : pjudge
     Notes       :
@@ -16,8 +16,8 @@ define {&ACCESS-LEVEL} temp-table ttTalk no-undo before-table btTalk
     field name as character
     field speaker as character
     field abstract as character
-    field talk_status as Progress.Lang.Object       // Conference.BusinessLogic.TalkStatusEnum 
-    field content_url as Progress.Lang.Object       // OpenEdge.Net.HTTP.URI
+    field talk_status as character 
+    field content_url as character
     field content_type as character                 // mime-type
     index idx1 as primary unique id
     index idx2 speaker

@@ -20,7 +20,7 @@ block-level on error undo, throw.
 procedure list_streams:
     define output parameter pStreams as character extent no-undo.
     
-    assign extent(pStreams) = 5
+    assign extent(pStreams) = 6
            // Coding
            pStreams[1] = 'ABL'
            // Database-y
@@ -30,5 +30,7 @@ procedure list_streams:
            pStreams[4] = 'KEY'
            // Misc topics
            pStreams[5] = 'GEN'
+           // Undefined
+           pStreams[6] = 'NON'
            .
 end procedure. 

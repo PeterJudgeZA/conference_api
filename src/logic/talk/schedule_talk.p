@@ -93,6 +93,7 @@ procedure cancel_scheduled_talk_by_talk:
     
     if updateError:NumMessages gt 0 then
         return error updateError.
+    
     finally:
         delete object hTalksLogic no-error.
     end finally.

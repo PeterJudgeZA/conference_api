@@ -44,6 +44,29 @@ procedure set_talk_status:
         return error new AppError(substitute('Talk &1 not found', pTalk), 0).
 end procedure.
 
+procedure switch_stream:
+    define input parameter pTalk as character no-undo.
+    define input parameter pStream as character no-undo.
+    
+    define variable newTalkId as character no-undo.
+    define buffer bTalk for talk. 
+    
+    Assert:NotNullOrEmpty(pStream, 'Talk stream').
+    Assert:NotNullOrEmpty(pTalk, 'Talk ID').
+    
+    assign newTalkId                  = pTalk
+           entry(1, newTalkId, '-':u) = pStream
+           .
+    if can-find(bTalk where bTalk.id eq newTalkId) then
+        return error new AppError(substitute('Talk found with new id &1', newTalkId), 0).
+    
+    find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
+    if available bTalk then
+        assign bTalk.id = newTalkId.
+    else
+        return error new AppError(substitute('Talk &1 not found', pTalk), 0).
+end procedure.
+
 procedure update_talks:
     define input-output parameter table for ttTalk.
     
@@ -55,14 +78,9 @@ procedure update_talks:
         transaction:
         find bTalk where bTalk.id eq ttTalk.id exclusive-lock no-error.
         if available bTalk then
-        do:
             buffer-copy ttTalk
-                        except id talk_status content_url  
-                     to bTalk
-                        assign bTalk.talk_status = ttTalk.talk_status:ToString() when valid-object(ttTalk.talk_status)
-                               bTalk.content_url = ttTalk.content_url:ToString() when valid-object(ttTalk.content_url)
-                               .
-        end.
+                        except id 
+                     to bTalk.
         else
             updateError:AddMessage(substitute('Talk &1 not found', ttTalk.id), 0).
         
