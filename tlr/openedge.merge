@@ -2,17 +2,15 @@
 sessionStartupProc=session_start.p
 
 [${oepas-app}.${oepas-webapp}.WEB]
-handler1 = Conference.SI.TalksHandler    : /speakers/{spkr}/talks/{tlk}
-handler2 = Conference.SI.SpeakersHandler : /speakers/{spkr}
-handler3 = Conference.SI.SpeakersHandler : /speakers
-handler4 = Conference.SI.TalksHandler    : /talks/{tlk}
-handler5 = Conference.SI.TalksHandler    : /talks
-
-
-[${oepas-app}.${oepas-webapp}.WEB]
-handler1 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers/{spkr}/talks/{tlk}
-handler2 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers/{spkr}
-handler3 = OpenEdge.Web.DataObject.DataObjectHandler: /speakers
-handler4 = OpenEdge.Web.DataObject.DataObjectHandler: /talks/{tlk}
-handler5 = OpenEdge.Web.DataObject.DataObjectHandler: /talks
+handler1 = Conference.SI.TalksHandler : /talks/{talk-id}/schedule
+handler2 = Conference.SI.TalksHandler : /talks/{talk-id}/{stream-id} 
+handler3 = Conference.SI.TalksHandler : /talks/{talk-id} 
+handler4 = Conference.SI.TalksHandler : /talks/streams
+handler5 = Conference.SI.TalksHandler : /talks
+# Uses $CATALINA_BASE/webapps/${oepas-webapp}/WEB-INF/openedge/conf.map for mapping info
+handler6  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/schedule 
+handler7  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/{stream-id} 
+handler8  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}
+handler9  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/streams
+handler10 = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks
 

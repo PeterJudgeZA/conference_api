@@ -45,8 +45,8 @@ procedure set_talk_status:
 end procedure.
 
 procedure switch_stream:
-    define input parameter pTalk as character no-undo.
-    define input parameter pStream as character no-undo.
+    define input        parameter pTalk as character no-undo.
+    define input-output parameter pStream as character no-undo.
     
     define variable newTalkId as character no-undo.
     define buffer bTalk for talk. 
@@ -62,7 +62,9 @@ procedure switch_stream:
     
     find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
     if available bTalk then
-        assign bTalk.id = newTalkId.
+        assign bTalk.id = newTalkId
+               pStream  = bTalk.id
+               .
     else
         return error new AppError(substitute('Talk &1 not found', pTalk), 0).
 end procedure.

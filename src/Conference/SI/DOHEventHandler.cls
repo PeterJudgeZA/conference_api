@@ -32,8 +32,6 @@ class Conference.SI.DOHEventHandler:
         
         DataObjectHandler:Invoked:Subscribe(InvokedHandler).
         DataObjectHandler:OperationError:Subscribe(OperationErrorHandler).
-        
-        ArgumentValueWriterRegistry:Registry:Put(get-class(FilterParams):TypeName, get-class(FilterParamArgumentWriter)).
     end constructor.
 
     /* Event published when an error is encountered 
@@ -42,7 +40,6 @@ class Conference.SI.DOHEventHandler:
        @param HandlerErrorEventArgs Event args for this event */
     method public void OperationErrorHandler (input poSender as Progress.Lang.Object,
                                               input poEventArgs as HandlerErrorEventArgs):
-        message 'OPERATIONERROR'.
     end method. 
     
     /* Event published after the business logic function was called by the handler 
