@@ -1,10 +1,28 @@
 # Conference API Example
 This repo contains examples of ABL REST services for "Conference API" that's used in some PUG sessions.
 
+This repository contains the business logic and service interfaces of an example "Conference API". The ABL business
+
+## Project structure
+The main folders are
+`/db`
+Contains the `conf` database and schema
+
+`/src/logic/**`
+`/src/BusinessLogic/**`
+Contains ABL business logic, mainly in .P form. This code represents an existing AppServer-enabled OpenEdge application
+
+`/src/Conference/SI/**`
+Contains service interfaces, such as WebHandlers and JSON mapping files.
+
+`/tlr/**`
+Contains property and other files to tailor the install. The included `openedge.merge` file contains handler mappings and can be added to a PASOE instance using the `oeprop -f path/to/openedge.merge` command.
 
 ## Services
 
 All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8830/api/'
+
+The suggested handler configuration is in the `tlr/openedge.merge` file. This contains mappings for a hand-coded WebHandler-based approach , as well as a DataObjectHandler approach that uses the `Conference\SI\conf.map` file for mapping the individual requests. The URI's are almost identical between those approaches; the primary difference being that the DOH uses a `/web/conf/talks` prefix, and the hand-coded WebHandler uses `/web/talks`. This is so that we can have both styles in the same webapp.
 
 ### Talks
 These URI's are handled by the `Conference.SI.TalksWebHandler` mapped in `openedge.properties`
@@ -13,6 +31,7 @@ where
     <n> is a sequential, contiguous integer value
     <uri> is the URI from the table below, including any tokens.
 The order of the handler definitions must be from most-specific to least, so `web/talks` would be the last (highest number) defined of all the URI's that begins with `web/talks`
+
 
 URI | HTTP method | Query | Body | Business logic call 
 ---- | ---- | ---- | ---- |---- 
@@ -26,45 +45,6 @@ web/talks/{talk-id}/{stream-id} | PUT | n/a | ttTalk | logic/talk/update_talk.p:
 web/talks/streams | GET | n/a | n/a | logic/talk/streams.p:list_streams
 web/talks/{talk-id}/schedule | GET | n/a | n/a| logic/talk/list_talk_schedule.p:get_schedule
 
-### Speakers
-These URI's are handled by the `Conference.SI.SpeakersWebHandler` mapped in `openedge.properties`
-    handler<n>=Conference.SI.SpeakersWebHandler: <uri> 
-where
-    <n> is a sequential, contiguous integer value
-    <uri> is the URI from the table below, including any tokens.
-The order of the handler definitions must be from most-specific to least, so `web/speakers` would be the last (highest number) defined of all the URI's that begins with `web/speakers`.
 
-
-URI | HTTP method | Query | Body | Business logic call 
----- | ---- | ---- |---- |---- 
-web/speakers | GET | filter, top | n/a | logic/speakers/find_speaker.p:get_filtered_speakers 
-web/schedule/{speaker-id} | GET | n/a | n/a | logic/speakers/find_speaker.p:get_single_speaker 
-web/schedule/{speaker-id}/pic | GET | n/a | n/a | logic/speakers/get_name.p:get_speaker_name 
-web/schedule/{speaker-id} | GET | n/a | n/a | logic/speakers/get_name.p:get_speaker_pic 
-web/schedule/{speaker-id}/talks | GET | n/a | n/a | logic/speakers/list_speaker_talks.p:get_talks  
-web/schedule/ |POST| n/a | n/a | logic/speakers/new_speaker.p:create_speaker 
-web/schedule/{speaker-id} | DELETE | n/a | n/a | logic/speakers/remove_speaker.p:delete_speaker 
-web/schedule/{speaker-id}/pic| PUT  | n/a | n/a | logic/speakers/update_speaker.p:update_pic 
-web/schedule/{speaker-id} | PUT | n/a | n/a |logic/speakers/update_speaker.p:update_speaker
-web/schedule/{timeslot-id} | GET | n/a | n/a |  logic/talk/schedule_talk.p:cancel_scheduled_talk_by_id 
-
-### Schedule
-
-URI | HTTP method | Query | Body | Business logic call 
----- | ---- | ---- |---- |---- 
-web/schedule | GET | filter, top | n/a | no-code
-web/schedule | POST | n/a | {"room": string, "startAt": iso-date, 
-talk": string, "duration": integer} | logic/talk/schedule_talk.p:schedule_talk
-
-web/schedule/{timeslot-id} | GET | filter, top | n/a | no-code
-web/schedule/{timeslot-id} | DELETE | n/a | n/a | logic/talk/schedule_talk.p:cancel_scheduled_talk_by_id 
-web/schedule/{timeslot-id} | POST | n/a | ttTimeslot | logic/talk/schedule_talk.p:udpate_schedule
-
-web/schedule/{speaker-id} | GET | n/a | n/a | logic/speakers/find_speaker.p:get_single_speaker 
-web/schedule/{speaker-id}/pic | GET | n/a | n/a | logic/speakers/get_name.p:get_speaker_name 
-web/schedule/{speaker-id} | GET | n/a | n/a | logic/speakers/get_name.p:get_speaker_pic 
-web/schedule/{speaker-id}/talks | GET | n/a | n/a | logic/speakers/list_speaker_talks.p:get_talks  
-web/schedule/ |POST| n/a | n/a | logic/speakers/new_speaker.p:create_speaker 
-web/schedule/{speaker-id} | DELETE | n/a | n/a | logic/speakers/remove_speaker.p:delete_speaker 
-web/schedule/{speaker-id}/pic| PUT  | n/a | n/a | logic/speakers/update_speaker.p:update_pic 
-web/schedule/{speaker-id} | PUT | n/a | n/a |logic/speakers/update_speaker.p:update_speaker
+## Setup 
+<tbd>
