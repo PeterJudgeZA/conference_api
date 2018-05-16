@@ -48,7 +48,6 @@
            "PUT": {
             "contentType": "application/vnd.conf.talks+json",
             "statusCode": 201,
-            "options": {},
             "entity": {
               "type": "procedure",
               "name": "logic/talk/new_talk.p",

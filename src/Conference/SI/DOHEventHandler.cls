@@ -12,16 +12,13 @@
 block-level on error undo, throw.
 
 using Conference.SI.DOHEventHandler.
-using Conference.SI.FilterParamArgumentWriter.
 using OpenEdge.Net.HTTP.HttpHeader.
 using OpenEdge.Web.DataObject.DataObjectHandler.
 using OpenEdge.Web.DataObject.HandlerErrorEventArgs.
 using OpenEdge.Web.DataObject.OperationInvocationEventArgs.
-using OpenEdge.Web.DataObject.Writer.ArgumentValueWriterRegistry.
 using Progress.Json.ObjectModel.JsonArray.
 using Progress.Json.ObjectModel.JsonDataType.
 using Progress.Json.ObjectModel.JsonObject.
-using logic.FilterParams.
 
 class Conference.SI.DOHEventHandler: 
     /* circular dep to cheat death aka GC */
@@ -67,8 +64,8 @@ class Conference.SI.DOHEventHandler:
         assign appBase  = trim(poEventArgs:Request:WebAppPath, '/':u)  + '/':u
                         + trim(poEventArgs:Request:TransportPath, '/':u) + '/' 
                linkBase = appBase + trim(poEventArgs:Request:PathInfo, '/':u)
-               .    
-        if     poEventArgs:Response:StatusCode  eq 201 
+               .
+        if     poEventArgs:Response:StatusCode  eq 201
            and poEventArgs:Response:HasHeader('Location') 
        then
             assign locationHdr       = poEventArgs:Response:GetHeader('Location')
@@ -79,7 +76,7 @@ class Conference.SI.DOHEventHandler:
         if poEventArgs:Response:ContentType eq 'application/vnd.conf.talks+json' then
         do:
             assign msgBody  = cast(poEventArgs:Response:Entity, JsonObject).
- 
+            
             if     msgBody:Has('data')
                and msgBody:GetType('data') eq JsonDataType:OBJECT
             then

@@ -8,7 +8,7 @@ handler3 = Conference.SI.TalksHandler : /talks/{talk-id}
 handler4 = Conference.SI.TalksHandler : /talks/streams
 handler5 = Conference.SI.TalksHandler : /talks
 # Uses $CATALINA_BASE/webapps/${oepas-webapp}/WEB-INF/openedge/conf.map for mapping info
-handler6  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/schedule 
+handler6  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/schedule
 handler7  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/{stream-id} 
 handler8  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}
 handler9  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/streams
