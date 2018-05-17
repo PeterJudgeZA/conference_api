@@ -6,7 +6,6 @@
 
 
 # Progress ABL Files
-bin/
 temp/
 *.r
 protrace*.*
