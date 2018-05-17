@@ -2,7 +2,7 @@
 This is a FAQ / cheat-sheet for coding the webhandler
 
 ## Reading information from the HTTP Request 
-The request that is passed into a WebHandler is an implementation of the `OpenEdge.Web.IWebRequest` interface. API documentation for this interfaces is at https://documentation.progress.com/output/oehttpclient/117/OpenEdge.Web.IWebRequest.html 
+The request that is passed into a WebHandler is an implementation of the `OpenEdge.Web.IWebRequest` interface. API documentation for this interface is at https://documentation.progress.com/output/oehttpclient/117/OpenEdge.Web.IWebRequest.html 
 
 ## Query strings
 If you know the name of a query string, you can get the value by calling the `GetQueryValue` method on the request's URI property. The URI contains information about the URI used to make the request, including the schema (`http`), the host, port, path and query string.
@@ -29,15 +29,15 @@ method override protected integer HandleGet(input pReq as OpenEdge.Web.IWebReque
 Path parameters are the `{}` enclosed values on the handler definition in the properties file, for example the mapping
 `handler3 = Conference.SI.TalksHandler : /talks/{talk-id}/{stream-id}`
 
-Contains two path parameters: `talk-id` and `stream-id`
-`
+Contains two path parameters:
+    `talk-id` and `stream-id` 
+
 We can inspect the values, and enumerate the path parameters from the request.
 
 Path parameters are READ-ONLY.
 
 ```
-  define variable names as character extent no-undo.
-
+method override protected integer HandleGet(input pReq as OpenEdge.Web.IWebRequest ):
   message pReq:PathParameterNames.
   // Shows talk-id,stream-id
 
@@ -58,6 +58,7 @@ Headers (names and values) are READ-WRITE.
 
 Reading a request header
 ```
+method override protected integer HandleGet(input pRequest as OpenEdge.Web.IWebRequest ):
   define variable hdrContentType as HttpHeader no-undo.
    
   // get the header if it exists
@@ -90,19 +91,20 @@ Message bodies are READ-WRITE.
 
 Reading message bodies (JSON in this example)
 ```
-  define variable msgbody as JsonObject no-undo.
+method override protected integer HandleGet(input pReq as OpenEdge.Web.IWebRequest ):
+  define variable msgbody as Progress.Json.ObjectModel.JsonObject no-undo.
   define variable streamId as character no-undo.
   
   case pReq:ContentType:
     when 'application/json' then
-      assign msgBody = cast(pReq:Entity, JsonObject).
+      assign msgBody = cast(pReq:Entity, Progress.Json.ObjectModel.JsonObject).
     otherwise
-       return error new AppError('Unable to convert message body', 0).
-   end case.
+       return error new Progress.Lang.AppError('Unable to convert message body', 0).
+  end case.
   
   // now we can get values out of the body
   if     msgBody:Has('stream')
-     and msgBody:GetType('stream') eq JsonDataType:STRING
+     and msgBody:GetType('stream') eq Progress.Json.ObjectModel.JsonDataType:STRING
   then
     assign streamId = msgBody:GetCharacter('stream').
   
@@ -112,11 +114,11 @@ Reading message bodies (JSON in this example)
 Writing message bodies
 ```
   assign resp             = new OpenEdge.Web.WebResponse()
-         msgBody          = new JsonObject()
+         msgBody          = new Progress.Json.ObjectModel.JsonObject()
          // we MUST set the ContentType property
          resp:ContentType = 'application/json'
          resp:Entity      = msgBody
-         record           = new JsonObject()
+         record           = new Progress.Json.ObjectModel.JsonObject()
          .
   // we got ttTalk data from a call to business logic
   buffer ttTalk:write-json('JsonObject', record, true).
