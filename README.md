@@ -20,7 +20,7 @@ Contains property and other files to tailor the install. The included `openedge.
 
 ## Services
 
-All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8830/api/'
+All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8830/api/`
 
 The suggested handler configuration is in the `tlr/openedge.merge` file. This contains mappings for a hand-coded WebHandler-based approach , as well as a DataObjectHandler approach that uses the `Conference\SI\conf.map` file for mapping the individual requests. The URI's are almost identical between those approaches; the primary difference being that the DOH uses a `/web/conf/talks` prefix, and the hand-coded WebHandler uses `/web/talks`. This is so that we can have both styles in the same webapp.
 
