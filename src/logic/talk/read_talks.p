@@ -68,16 +68,17 @@ procedure get_filtered_talks:
     define output parameter pCount as integer no-undo.
     
     define buffer bTalk for talk.
-    define query qTalk for bTalk scrolling.
+    define buffer bSpkr for speaker.
+    define query qTalk for bTalk, bSpkr scrolling.
     
     empty temp-table ttTalk.
+    
+    assign pFilter = left-trim(pFilter, 'where ').
     
     if String:IsNullOrEmpty(pFilter) then
         assign pFilter = 'true'.
     
-    assign pFilter = left-trim(pFilter, 'where ').
-    
-    query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock ').
+    query qTalk:query-prepare('preselect each bTalk where ' + pFilter + ' no-lock, first bSpkr where bSpkr.id eq bTalk.speaker no-lock').
     query qTalk:query-open().
     
     if    pTopRecs le 0
@@ -92,10 +93,13 @@ procedure get_filtered_talks:
     
     get next qTalk.
     do while     available bTalk
-             and pCount le pTopRecs
+             and pCount lt pTopRecs
     :
         create ttTalk.
-        buffer-copy bTalk to ttTalk.
+        buffer-copy bTalk 
+                    except speaker
+                to ttTalk
+                    assign ttTalk.speaker = bSpkr.name.
         
         assign pCount = pCount + 1.
         get next qTalk.
@@ -111,14 +115,20 @@ procedure get_single_talk:
     define output parameter table for ttTalk.
     
     define buffer bTalk for talk.
+    define buffer bSpkr for speaker.
     
     find bTalk where bTalk.id eq pid no-lock no-error.
     if available bTalk then
     do:
         empty temp-table ttTalk.
         
+        find bSpkr where bSpkr.id eq bTalk.speaker no-lock.    
+        
         create ttTalk.
-        buffer-copy bTalk to ttTalk.
+        buffer-copy bTalk 
+                    except speaker
+                to ttTalk
+                    assign ttTalk.speaker = bSpkr.name.
     end.
     else
         return error new AppError(substitute('Talk &1 not found', pId), 0).
