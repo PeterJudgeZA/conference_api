@@ -19,14 +19,12 @@ using OpenEdge.Web.SendExceptionError.
 using OpenEdge.Web.WebHandler.
 using OpenEdge.Web.WebResponse.
 using OpenEdge.Web.WebResponseWriter.
-using Progress.Json.ObjectModel.JsonArray.
-using Progress.Json.ObjectModel.JsonDataType.
 using Progress.Json.ObjectModel.JsonObject.
 
 class Conference.SI.TalksHandler inherits WebHandler:
     {logic/shared/talks_dataset.i &ACCESS-LEVEL=private}
     
-    method override protected integer HandleDelete(input pReq as OpenEdge.Web.IWebRequest ):
+    method override protected integer HandleDelete(input poRequest as OpenEdge.Web.IWebRequest ):
         define variable talkId as character no-undo.
         define variable resp  as WebResponse no-undo.
         define variable msgBody as JsonObject no-undo.
@@ -35,16 +33,13 @@ class Conference.SI.TalksHandler inherits WebHandler:
         
         assign resp             = new OpenEdge.Web.WebResponse()
                msgBody          = new JsonObject()
-               resp:ContentType = 'application/vnd.conf.talks+json'
+               resp:ContentType = 'application/json'
                resp:Entity      = msgBody
                .
         //web/talks/{talk-id} | DELETE | n/a | n/a |  logic/talk/schedule_talk.p:cancel_scheduled_talk_by_talk
-        if right-trim(pReq:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
+        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
         do:
-            assign talkId = pReq:GetPathParameter('talk-id').
-            
-            run logic/talk/schedule_talk.p single-run set hBusinessLogic.
-            run cancel_scheduled_talk_by_talk in hBusinessLogic (talkId).
+            // IMPLEMENTATION HERE
         end.
         
         SendResponse(resp).
@@ -63,7 +58,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         undo, throw new SendExceptionError(StatusCodeEnum:NotImplemented).
     end method.
     
-    method override protected integer HandleGet( input pReq as OpenEdge.Web.IWebRequest ):
+    method override protected integer HandleGet( input poRequest as OpenEdge.Web.IWebRequest ):
         define variable talkId as character no-undo.
         define variable resp  as WebResponse no-undo.
         define variable msgBody as JsonObject no-undo.
@@ -77,13 +72,13 @@ class Conference.SI.TalksHandler inherits WebHandler:
         
         assign resp             = new OpenEdge.Web.WebResponse()
                msgBody          = new JsonObject()
-               resp:ContentType = 'application/vnd.conf.talks+json'
+               resp:ContentType = 'application/json'
                resp:Entity      = msgBody
                .
         //web/talks/{talk-id} | GET | n/a | n/a |  logic/talk/read_talks.p:get_single_talk
-        if right-trim(pReq:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
+        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
         do:
-            assign talkId = pReq:GetPathParameter('talk-id')
+            assign talkId = poRequest:GetPathParameter('talk-id')
                    record = new JsonObject()
                    .
             run logic/talk/read_talks.p single-run set hBusinessLogic.
@@ -96,44 +91,20 @@ class Conference.SI.TalksHandler inherits WebHandler:
         end.
         else
         //web/talks/{talk-id}/schedule | GET | n/a | n/a| logic/talk/list_talk_schedule.p:get_schedule
-        if right-trim(pReq:UriTemplate, '/':u) eq '/talks/~{talk-id}/schedule' then
+        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}/schedule' then
         do:
-            assign talkId = pReq:GetPathParameter('talk-id')
-                   record = new JsonObject()
-                   .
-            run logic/talk/list_talk_schedule.p single-run set hBusinessLogic.
-            run get_schedule in hBusinessLogic (talkId, output table ttTimeslot).
-            
-            buffer ttTimeslot:write-json('JsonObject', record, true).
-            
-            msgBody:Add('data',  record).
+            // IMPLEMENTATION HERE
         end.        
         //web/talks/streams | GET | n/a | n/a | logic/talk/streams.p:list_streams
-        if right-trim(pReq:PathInfo, '/') eq '/talks/streams' then
+        if right-trim(poRequest:PathInfo, '/') eq '/talks/streams' then
         do:
-            run logic/talk/streams.p single-run set hBusinessLogic.
-            run list_streams in hBusinessLogic (output streams).
-            
-            msgBody:Add('data', new JsonArray(streams)).
+            // IMPLEMENTATION HERE
         end.
         else
         //web/talks | GET | filter, top, skip  | n/a |  logic/talk/read_talks.p:get_filtered_talks
-        if right-trim(pReq:PathInfo, '/') eq '/talks' then
+        if right-trim(poRequest:PathInfo, '/') eq '/talks' then
         do:
-            assign topRecs  = integer(pReq:URI:GetQueryValue('top'))
-                   skipRecs = integer(pReq:URI:GetQueryValue('skip'))
-                   filter   = pReq:URI:GetQueryValue('filter')
-                   record   = new JsonObject()
-                   .
-            
-            run logic/talk/read_talks.p single-run set hBusinessLogic.
-            run get_filtered_talks in hBusinessLogic (input filter, skipRecs, topRecs,
-                                                      output table ttTalk, output qryCnt).
-            
-            buffer ttTalk:write-json('JsonObject', record, true).
-            
-            msgBody:Add('data',  record).
-            msgBody:Add('count', qryCnt).
+            // IMPLEMENTATION HERE
         end.
         
         SendResponse(resp).
@@ -142,55 +113,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         return 0.
     end method.
     
-    method override protected integer HandlePost( input pReq as OpenEdge.Web.IWebRequest ):
-        define variable talkId as character no-undo.
-        define variable resp  as WebResponse no-undo.
-        define variable msgBody as JsonObject no-undo.
-        define variable record as JsonObject no-undo.
-        define variable talkName as character no-undo.
-        define variable streamId as character no-undo.
-        define variable appBase as character no-undo.
-        define variable linkBase as character no-undo.
-        define variable hBusinessLogic as handle no-undo.
-        
-        assign resp             = new OpenEdge.Web.WebResponse()
-               resp:StatusCode  = StatusCodeEnum:Created:GetValue()     //201/Created
-               msgBody          = new JsonObject()
-               resp:ContentType = 'application/vnd.conf.talks+json'
-               resp:Entity      = msgBody
-               
-               appBase          = trim(pReq:WebAppPath, '/':u)  + '/'
-                                + trim(pReq:TransportPath, '/':u) + '/' 
-               linkBase         = appBase + trim(pReq:PathInfo, '/':u)
-               .
-        
-        //web/talks| POST | n/a | {"stream": string, "name": string } |  logic/talk/new_talk.p:new_talk
-        if right-trim(pReq:PathInfo, '/') eq '/talks' then
-        do:
-            assign record = cast(pReq:Entity, JsonObject).
-            if     record:Has('stream')
-               and record:GetType('stream') eq JsonDataType:STRING
-            then
-                assign streamId = record:GetCharacter('stream').
-
-            if     record:Has('name')
-               and record:GetType('name') eq JsonDataType:STRING
-            then
-                assign talkName = record:GetCharacter('name').
-            
-            run logic/talk/new_talk.p single-run set hBusinessLogic.
-            run new_talk in hBusinessLogic (streamId, talkName, output talkId).
-            
-            resp:SetHeader('Location', linkBase + '/' + talkId).  
-        end.
-        
-        SendResponse(resp).
-        
-        // Add cleanup; error handling for path validation and other issues
-        return 0.
-    end method.
-    
-    method override protected integer HandlePut( input pReq as OpenEdge.Web.IWebRequest ):
+    method override protected integer HandlePut( input poRequest as OpenEdge.Web.IWebRequest ):
         define variable talkId as character no-undo.
         define variable resp  as WebResponse no-undo.
         define variable msgBody as JsonObject no-undo.
@@ -207,84 +130,45 @@ class Conference.SI.TalksHandler inherits WebHandler:
         
         assign resp             = new OpenEdge.Web.WebResponse()
                msgBody          = new JsonObject()
-               resp:ContentType = 'application/vnd.conf.talks+json'
+               resp:ContentType = 'application/json'
                resp:Entity      = msgBody
                .
         
         // POST is usually a CREATE but we're cheating a little here
         //web/talks| PUT | n/a | {"speaker": string, "name": string , "abstract": string, "contentUrl": string, "contentType": string } |  logic/talk/new_talk.p:create_talk
-        if right-trim(pReq:PathInfo, '/') eq '/talks' then
+        if right-trim(poRequest:PathInfo, '/') eq '/talks' then
         do:
-            assign record          = cast(pReq:Entity, JsonObject)
+            assign record          = cast(poRequest:Entity, JsonObject)
                    //201/Created
                    resp:StatusCode = StatusCodeEnum:Created:GetValue()
-                   appBase         = trim(pReq:WebAppPath, '/':u)  + '/'
-                                   + trim(pReq:TransportPath, '/':u) + '/' 
-                   linkBase        = appBase + trim(pReq:PathInfo, '/':u)
+                   appBase         = trim(poRequest:WebAppPath, '/':u)  + '/'
+                                   + trim(poRequest:TransportPath, '/':u) + '/' 
+                   linkBase        = appBase + trim(poRequest:PathInfo, '/':u)
                    .
-            if     record:Has('name')
-               and record:GetType('name') eq JsonDataType:STRING
-            then
-                assign talkName = record:GetCharacter('name').
-            if     record:Has('speaker')
-               and record:GetType('speaker') eq JsonDataType:STRING
-            then
-                assign speaker = record:GetCharacter('speaker').
-            if     record:Has('talkAbstract')
-               and record:GetType('talkAbstract') eq JsonDataType:STRING
-            then
-                assign talkAbstract = record:GetCharacter('talkAbstract').
-            if     record:Has('contentUrl')
-               and record:GetType('contentUrl') eq JsonDataType:STRING
-            then
-                assign contentUrl = record:GetCharacter('contentUrl').
-            if     record:Has('contentType')
-               and record:GetType('contentType') eq JsonDataType:STRING
-            then
-                assign contentType = record:GetCharacter('contentType').
+            // CALL BUSINESS LOGIC
             
-            run logic/talk/new_talk.p single-run set hBusinessLogic.
-            run create_talk in hBusinessLogic (talkName, speaker, talkAbstract, contentUrl, contentType, 
-                                               output talkId).
-            
+            //EXAMPLE SETTING THE Location HEADER TO something like api/web/talks/ABL-018
             resp:SetHeader('Location', linkBase + '/' + talkId).
         end.
         else
         //web/talks/{talk-id} | PUT | n/a | ttTalk | logic/talk/update_talk.p:update_talks
-        if right-trim(pReq:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
+        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
         do:
-            assign talkId = pReq:GetPathParameter('talk-id')
-                   record = cast(pReq:Entity, JsonObject)
-                   .
-            buffer ttTalk:read-json('JsonObject', record, 'EMPTY').
-            
-            // some validation?
-            if can-find(ttTalk where ttTalk.id ne talkId) then
-                undo, throw new SendExceptionError(StatusCodeEnum:BadRequest,
-                                                   substitute('Bad request: talk.id mismatch &1', talkId)) .
-            
-            run logic/talk/update_talk.p single-run set hBusinessLogic.
-            run update_talks in hBusinessLogic (input-output table ttTalk).
-            
-            assign record = new JsonObject().
-            buffer ttTalk:write-json('JsonObject', record, true).
-            
-            msgBody:Add('data',  record).
+            // IMPLEMENTATION HERE
         end.
         else
         //web/talks/{talk-id}/{stream-id} | PUT | n/a | n/a | logic/talk/update_talk.p:switch_stream
-        if right-trim(pReq:UriTemplate, '/':u) eq '/talks/~{talk-id}/~{stream-id}' then
+        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}/~{stream-id}' then
         do:
-            assign talkId   = pReq:GetPathParameter('talk-id')
-                   streamId = pReq:GetPathParameter('stream-id')
-                   .
-            run logic/talk/update_talk.p single-run set hBusinessLogic.
-            run switch_stream in hBusinessLogic (talkId, input-output streamId).
-            
-            msgBody:Add('data',  streamId).
+            // IMPLEMENTATION HERE
         end.
         
         SendResponse(resp).
+        
+        // SendResponse Replaces the default
+        // assign writer = new WebResponseWriter(pResponse).
+        // writer:Open().
+        // writer:Close().
         
         // Add cleanup; error handling for path validation and other issues
         return 0.
@@ -295,7 +179,6 @@ class Conference.SI.TalksHandler inherits WebHandler:
        @param IHttpResponse The response to write */
     method protected void SendResponse(input pResponse as IHttpResponse):
         define variable writer as WebResponseWriter no-undo.
-        define variable msgWriter as MessageWriter no-undo.
         
         // write the response, whatever it is
         assign writer = new WebResponseWriter(pResponse).
@@ -309,10 +192,10 @@ class Conference.SI.TalksHandler inherits WebHandler:
        @param IWebRequest The request that resulting in the exception
        @return integer A non-null status code use to deal with errors */
     method override protected integer HandleException(input poError as Progress.Lang.Error,
-                                                      input pReq as IWebRequest):
+                                                      input poRequest as IWebRequest):
         define variable resp as IHttpResponse no-undo.
         
-        if not CanAcceptContentType(pReq, 'application/json') then
+        if not CanAcceptContentType(poRequest, 'application/json') then
         do:
             if type-of(poError, SendExceptionError) then
                 return integer(cast(poError, SendExceptionError):StatusCode).
@@ -321,7 +204,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         end.
         
         assign resp             = new OpenEdge.Web.WebResponse()
-               resp:ContentType = 'application/vnd.conf.error+json'
+               resp:ContentType = 'application/json'
                resp:Entity      = poError
                .
         if type-of(poError, SendExceptionError) then
