@@ -18,9 +18,13 @@ Contains service interfaces, such as WebHandlers and JSON mapping files.
 `/tlr/**`
 Contains property and other files to tailor the install. The included `openedge.merge` file contains handler mappings and can be added to a PASOE instance using the `oeprop -f path/to/openedge.merge` command.
 
+
+`/solutions/**`
+Contains completed code and properties
+ 
 ## Services
 
-All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8830/api/`
+All the URI's here are relative to the instance and webapp. The root URI is something like `http://localhost:8810/api/`
 
 The suggested handler configuration is in the `tlr/openedge.merge` file. This contains mappings for a hand-coded WebHandler-based approach , as well as a DataObjectHandler approach that uses the `Conference\SI\conf.map` file for mapping the individual requests. The URI's are almost identical between those approaches; the primary difference being that the DOH uses a `/web/conf/talks` prefix, and the hand-coded WebHandler uses `/web/talks`. This is so that we can have both styles in the same webapp.
 
@@ -36,8 +40,8 @@ The order of the handler definitions must be from most-specific to least, so `we
 URI | HTTP method | Query | Body | Business logic call 
 ---- | ---- | ---- | ---- |---- 
 web/talks | GET | filter, top, skip  | n/a |  logic/talk/read_talks.p:get_filtered_talks 
-web/talks| POST | n/a | {"stream": string, "name": string } |  logic/talk/new_talk.p:new_talk
-web/talks| PUT | n/a | {"speaker": string, "name": string , "abstract": string, "contentUrl": string, "contentType": string } |  logic/talk/new_talk.p:create_talk
+web/talks| PUT | n/a | {"stream": string, "name": string } |  logic/talk/new_talk.p:new_talk
+web/talks| POST | n/a | {"speaker": string, "name": string , "abstract": string, "contentUrl": string, "contentType": string } |  logic/talk/new_talk.p:create_talk
 web/talks/{talk-id} | GET | n/a | n/a |  logic/talk/read_talks.p:get_single_talk 
 web/talks/{talk-id} | DELETE | n/a | n/a |  logic/talk/schedule_talk.p:cancel_scheduled_talk_by_talk 
 web/talks/{talk-id} | PUT | n/a | ttTalk | logic/talk/update_talk.p:update_talks 

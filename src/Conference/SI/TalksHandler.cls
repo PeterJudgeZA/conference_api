@@ -11,7 +11,6 @@
   ----------------------------------------------------------------------*/
 block-level on error undo, throw.
 
-using OpenEdge.Net.HTTP.Filter.Payload.MessageWriter.
 using OpenEdge.Net.HTTP.IHttpResponse.
 using OpenEdge.Net.HTTP.StatusCodeEnum.
 using OpenEdge.Web.IWebRequest.
@@ -24,35 +23,13 @@ using Progress.Json.ObjectModel.JsonObject.
 class Conference.SI.TalksHandler inherits WebHandler:
     {logic/shared/talks_dataset.i &ACCESS-LEVEL=private}
     
-    method override protected integer HandleDelete(input poRequest as OpenEdge.Web.IWebRequest ):
-        define variable talkId as character no-undo.
-        define variable resp  as WebResponse no-undo.
-        define variable msgBody as JsonObject no-undo.
-        define variable record as JsonObject no-undo.
-        define variable hBusinessLogic as handle no-undo.
-        
-        assign resp             = new OpenEdge.Web.WebResponse()
-               msgBody          = new JsonObject()
-               resp:ContentType = 'application/json'
-               resp:Entity      = msgBody
-               .
-        //web/talks/{talk-id} | DELETE | n/a | n/a |  logic/talk/schedule_talk.p:cancel_scheduled_talk_by_talk
-        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
-        do:
-            // IMPLEMENTATION HERE
-        end.
-        
-        SendResponse(resp).
-        
-        // Add cleanup; error handling for path validation and other issues
-        return 0.
-    end method.
-
+    // we are required to implement this method  
     method override protected integer HandleNotAllowedMethod( input poRequest as IWebRequest ):
         // we want to deal with errors ourselves
         undo, throw new SendExceptionError(StatusCodeEnum:MethodNotAllowed).
     end method.
     
+    // we are required to implement this method 
     method override protected integer HandleNotImplemented( input poRequest as IWebRequest ):
         // we want to deal with errors ourselves
         undo, throw new SendExceptionError(StatusCodeEnum:NotImplemented).
@@ -67,7 +44,6 @@ class Conference.SI.TalksHandler inherits WebHandler:
         define variable skipRecs as integer no-undo initial 0.
         define variable topRecs as integer no-undo initial 0.
         define variable qryCnt as integer no-undo initial 0.
-        define variable streams as character extent no-undo.
         define variable hBusinessLogic as handle no-undo.
         
         assign resp             = new OpenEdge.Web.WebResponse()
@@ -90,21 +66,13 @@ class Conference.SI.TalksHandler inherits WebHandler:
             msgBody:Add('count', 1).
         end.
         else
-        //web/talks/{talk-id}/schedule | GET | n/a | n/a| logic/talk/list_talk_schedule.p:get_schedule
-        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}/schedule' then
-        do:
-            // IMPLEMENTATION HERE
-        end.        
-        //web/talks/streams | GET | n/a | n/a | logic/talk/streams.p:list_streams
-        if right-trim(poRequest:PathInfo, '/') eq '/talks/streams' then
-        do:
-            // IMPLEMENTATION HERE
-        end.
-        else
         //web/talks | GET | filter, top, skip  | n/a |  logic/talk/read_talks.p:get_filtered_talks
         if right-trim(poRequest:PathInfo, '/') eq '/talks' then
         do:
             // IMPLEMENTATION HERE
+            // read the filter, top and skip QUERY strings
+            // Run get_filtered_talks in logic/talk/read_talks.p
+            // Add the temp-table and the count to the response JSON
         end.
         
         SendResponse(resp).
@@ -113,20 +81,18 @@ class Conference.SI.TalksHandler inherits WebHandler:
         return 0.
     end method.
     
-    method override protected integer HandlePut( input poRequest as OpenEdge.Web.IWebRequest ):
-        define variable talkId as character no-undo.
+    method override protected integer HandlePost( input poRequest as OpenEdge.Web.IWebRequest ):
         define variable resp  as WebResponse no-undo.
         define variable msgBody as JsonObject no-undo.
         define variable record as JsonObject no-undo.
         define variable hBusinessLogic as handle no-undo.
-        define variable talkName as character no-undo.
         define variable speaker as character no-undo.
         define variable talkAbstract as character no-undo.
         define variable contentUrl as character no-undo.
         define variable contentType as character no-undo.
         define variable appBase as character no-undo.
         define variable linkBase as character no-undo.
-        define variable streamId as character no-undo.
+        define variable talkId as character no-undo.
         
         assign resp             = new OpenEdge.Web.WebResponse()
                msgBody          = new JsonObject()
@@ -134,33 +100,20 @@ class Conference.SI.TalksHandler inherits WebHandler:
                resp:Entity      = msgBody
                .
         
-        // POST is usually a CREATE but we're cheating a little here
-        //web/talks| PUT | n/a | {"speaker": string, "name": string , "abstract": string, "contentUrl": string, "contentType": string } |  logic/talk/new_talk.p:create_talk
+        //web/talks| POST | n/a | {"speaker": string, "name": string , "abstract": string, "contentUrl": string, "contentType": string } |  logic/talk/new_talk.p:create_talk
         if right-trim(poRequest:PathInfo, '/') eq '/talks' then
         do:
             assign record          = cast(poRequest:Entity, JsonObject)
-                   //201/Created
+                   // 201/Created
                    resp:StatusCode = StatusCodeEnum:Created:GetValue()
                    appBase         = trim(poRequest:WebAppPath, '/':u)  + '/'
                                    + trim(poRequest:TransportPath, '/':u) + '/' 
                    linkBase        = appBase + trim(poRequest:PathInfo, '/':u)
                    .
-            // CALL BUSINESS LOGIC
-            
-            //EXAMPLE SETTING THE Location HEADER TO something like api/web/talks/ABL-018
-            resp:SetHeader('Location', linkBase + '/' + talkId).
-        end.
-        else
-        //web/talks/{talk-id} | PUT | n/a | ttTalk | logic/talk/update_talk.p:update_talks
-        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}' then
-        do:
             // IMPLEMENTATION HERE
-        end.
-        else
-        //web/talks/{talk-id}/{stream-id} | PUT | n/a | n/a | logic/talk/update_talk.p:switch_stream
-        if right-trim(poRequest:UriTemplate, '/':u) eq '/talks/~{talk-id}/~{stream-id}' then
-        do:
-            // IMPLEMENTATION HERE
+            // read the speaker, name, abstract, contentUrl and contentType properties from the JSON body 
+            // Run create_talk in logic/talk/new_talk.p
+            // Use the returned id to create a Location response header. Add it to the linkBase variable
         end.
         
         SendResponse(resp).
@@ -184,44 +137,6 @@ class Conference.SI.TalksHandler inherits WebHandler:
         assign writer = new WebResponseWriter(pResponse).
         writer:Open().
         writer:Close().
-    end method.
-    
-    /* Handles an exception that has been raised while dealing with the request 
-    
-       @param Progress.Lang.Error The as-yet-unhandled exception
-       @param IWebRequest The request that resulting in the exception
-       @return integer A non-null status code use to deal with errors */
-    method override protected integer HandleException(input poError as Progress.Lang.Error,
-                                                      input poRequest as IWebRequest):
-        define variable resp as IHttpResponse no-undo.
-        
-        if not CanAcceptContentType(poRequest, 'application/json') then
-        do:
-            if type-of(poError, SendExceptionError) then
-                return integer(cast(poError, SendExceptionError):StatusCode).
-            else
-                return integer(StatusCodeEnum:NotAcceptable). 
-        end.
-        
-        assign resp             = new OpenEdge.Web.WebResponse()
-               resp:ContentType = 'application/json'
-               resp:Entity      = poError
-               .
-        if type-of(poError, SendExceptionError) then
-            assign resp:StatusCode = integer(cast(poError, SendExceptionError):StatusCode). 
-        else
-            assign resp:StatusCode = integer(StatusCodeEnum:InternalServerError).       //500
-        
-        // we will return the error
-        SendResponse(resp).
-        
-        // Add cleanup; error handling for path validation and other issues
-        return 0.
-        
-        // if something goes horribly horribly wrong
-        catch writeError as Progress.Lang.Error :
-            return integer(StatusCodeEnum:InternalServerError).       //500
-        end catch.
     end method.
     
 end class.

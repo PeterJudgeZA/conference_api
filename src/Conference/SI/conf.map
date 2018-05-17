@@ -45,7 +45,7 @@
               ]
             }
           },
-           "PUT": {
+           "POST": {
             "contentType": "application/vnd.conf.talks+json",
             "statusCode": 201,
             "entity": {
@@ -92,7 +92,7 @@
               ]
             }
           },
-          "POST": {
+          "PUT": {
             "contentType": "application/vnd.conf.talks+json",
             "statusCode": 201,
             "entity": {
