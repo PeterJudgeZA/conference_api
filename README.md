@@ -46,5 +46,11 @@ web/talks/streams | GET | n/a | n/a | logic/talk/streams.p:list_streams
 web/talks/{talk-id}/schedule | GET | n/a | n/a| logic/talk/list_talk_schedule.p:get_schedule
 
 
-## Setup 
-<tbd>
+## Testing
+Once the PASOE Instance is running, you can use any client/tool capable of making GET, PUT, POST and DELETE HTTP requests that support JSON payloads.
+
+The table above contains the URI's that are exposed and the associated business logic that's run.
+
+The [Insomnia REST client](http://insomnia.rest/) was used to develop and test these APIs. Included in the repo is an importable set of test cases. These are in `conf/Conference_API_insomnia.json` and can be imported. [Help](https://support.insomnia.rest/article/52-importing-and-exporting-data) for this is available online.
+
+The tests use tokens (environment variables) for the base URL (`base_url`) and webapp (`web_app`). The values for these should be changed to match your PASOE instance and webapp, and is done via the Insomnia client. [Help](https://support.insomnia.rest/article/18-environment-variables) is available online. The environment to change is the `Conference_Instance` sub-environment.
