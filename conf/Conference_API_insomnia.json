@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2018-05-17T15:13:32.260Z",
+	"__export_date": "2018-05-18T17:43:00.180Z",
 	"__export_source": "insomnia.desktop.app:v5.16.2",
 	"resources": [
 		{
@@ -45,6 +45,39 @@
 			"_type": "request_group"
 		},
 		{
+			"_id": "fld_44a2edf6485144fa95c626a9ce9e9edc",
+			"created": 1526567241386,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1526567198857,
+			"modified": 1526659440144,
+			"name": "DOH Requests",
+			"parentId": "wrk_0a984be7391141ef90488826083156d3",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_0248413068d347e4948d716647a7c825",
+			"created": 1526567269042,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1526567198832,
+			"modified": 1526659435963,
+			"name": "Admin Services",
+			"parentId": "wrk_0a984be7391141ef90488826083156d3",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_609958f8e2164e54bb0b3304fbea4d88",
+			"created": 1526573705011,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1526573705161,
+			"modified": 1526573740418,
+			"name": "Mobile Requests",
+			"parentId": "wrk_0a984be7391141ef90488826083156d3",
+			"_type": "request_group"
+		},
+		{
 			"_id": "env_01da080cf48e4767aabc3814bd0fc9d4",
 			"color": "#00ff00",
 			"created": 1526567594087,
@@ -54,32 +87,10 @@
 				"web_app_whs": "NEXT_Webhandler"
 			},
 			"isPrivate": false,
-			"modified": 1526567655467,
+			"modified": 1526592384464,
 			"name": "Conference_Instance",
 			"parentId": "env_80ceeaea6506453c835d95a266214638",
 			"_type": "environment"
-		},
-		{
-			"_id": "fld_44a2edf6485144fa95c626a9ce9e9edc",
-			"created": 1526567241386,
-			"description": "",
-			"environment": {},
-			"metaSortKey": -1526567198769.5,
-			"modified": 1526568597934,
-			"name": "DOH Requests",
-			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
-			"_type": "request_group"
-		},
-		{
-			"_id": "fld_0248413068d347e4948d716647a7c825",
-			"created": 1526567269042,
-			"description": "",
-			"environment": {},
-			"metaSortKey": -1526567198744.5,
-			"modified": 1526568595516,
-			"name": "Admin Services",
-			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
-			"_type": "request_group"
 		},
 		{
 			"_id": "req_54bfa6c666564d8880edabaafcd1e4e9",
@@ -296,10 +307,10 @@
 				}
 			],
 			"isPrivate": false,
-			"metaSortKey": -1526567198857,
-			"method": "PUT",
-			"modified": 1526567228708,
-			"name": "(WH) Create Talk (alt)",
+			"metaSortKey": -1526567198869.5,
+			"method": "POST",
+			"modified": 1526592450620,
+			"name": "(WH) Create Talk",
 			"parameters": [],
 			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
 			"settingDisableRenderRequestBody": false,
@@ -327,10 +338,10 @@
 				}
 			],
 			"isPrivate": false,
-			"metaSortKey": -1526567198882,
-			"method": "POST",
-			"modified": 1526567227284,
-			"name": "(WH) Create Talk",
+			"metaSortKey": -1526567198850.75,
+			"method": "PUT",
+			"modified": 1526592452869,
+			"name": "(WH) Create Talk (alt)",
 			"parameters": [],
 			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
 			"settingDisableRenderRequestBody": false,
@@ -360,7 +371,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1526567198832,
 			"method": "GET",
-			"modified": 1526569955284,
+			"modified": 1526659801154,
 			"name": "(WH) Get Talks",
 			"parameters": [],
 			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
@@ -369,7 +380,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/{{ web_app_whs  }}/web/talks?filter&top=2",
+			"url": "{{ base_url  }}/{{ web_app_whs  }}/web/talks?filter&top=2&skip=3",
 			"_type": "request"
 		},
 		{
@@ -687,6 +698,81 @@
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
 			"url": "{{ base_url  }}/{{ web_app_whs  }}/web/services/schema?svc=conf&ver=1.0.0",
+			"_type": "request"
+		},
+		{
+			"_id": "req_9616e70f46734b1cbe8542207f23798e",
+			"authentication": {},
+			"body": {},
+			"created": 1526584772212,
+			"description": "",
+			"headers": [],
+			"isPrivate": false,
+			"metaSortKey": -1526584791623,
+			"method": "GET",
+			"modified": 1526659424673,
+			"name": "Read Talks",
+			"parameters": [],
+			"parentId": "fld_609958f8e2164e54bb0b3304fbea4d88",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/{{ web_app_dos }}/web/pdo/dos/TalksBE?filter=",
+			"_type": "request"
+		},
+		{
+			"_id": "req_1563db9f4d5a4223a1c801b420c37798",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
+			"created": 1526584791573,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_ae26a443bcc547e7b9c45dd31650f9bf",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1526584791573,
+			"method": "POST",
+			"modified": 1526659414561,
+			"name": "Create Talk",
+			"parameters": [],
+			"parentId": "fld_609958f8e2164e54bb0b3304fbea4d88",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/{{ web_app_dos }}/web/pdo/dos/TalksBE",
+			"_type": "request"
+		},
+		{
+			"_id": "req_0f7ca28f70be4fcea032a522beb09461",
+			"authentication": {},
+			"body": {},
+			"created": 1526657774520,
+			"description": "",
+			"headers": [],
+			"isPrivate": false,
+			"metaSortKey": -1526657774520,
+			"method": "GET",
+			"modified": 1526657792163,
+			"name": "Get Catalog",
+			"parameters": [],
+			"parentId": "fld_609958f8e2164e54bb0b3304fbea4d88",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/{{ web_app_dos }}/web/static/TalksBE.json",
 			"_type": "request"
 		}
 	]
