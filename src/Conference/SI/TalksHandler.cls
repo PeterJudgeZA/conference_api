@@ -89,7 +89,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         define variable record as JsonObject no-undo.
         define variable hBusinessLogic as handle no-undo.
         define variable speaker as character no-undo.
-        define variable talkAbstract as character no-undo.
+        define variable abstract as character no-undo.
         define variable contentUrl as character no-undo.
         define variable contentType as character no-undo.
         define variable appBase as character no-undo.

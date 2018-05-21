@@ -147,7 +147,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         define variable record as JsonObject no-undo.
         define variable hBusinessLogic as handle no-undo.
         define variable speaker as character no-undo.
-        define variable talkAbstract as character no-undo.
+        define variable abstract as character no-undo.
         define variable contentUrl as character no-undo.
         define variable contentType as character no-undo.
         define variable appBase as character no-undo.
@@ -187,7 +187,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
             if     record:Has('abstract')
                and record:GetType('abstract') eq JsonDataType:STRING
             then
-                assign talkAbstract = record:GetCharacter('abstract').
+                assign abstract = record:GetCharacter('abstract').
             if     record:Has('contentUrl')
                and record:GetType('contentUrl') eq JsonDataType:STRING
             then
@@ -198,7 +198,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
                 assign contentType = record:GetCharacter('contentType').
             
             run logic/talk/new_talk.p single-run set hBusinessLogic.
-            run create_talk in hBusinessLogic (talkName, speaker, talkAbstract, contentUrl, contentType, 
+            run create_talk in hBusinessLogic (talkName, speaker, abstract, contentUrl, contentType, 
                                                output talkId).
             
             resp:SetHeader('Location', linkBase + '/' + talkId).
