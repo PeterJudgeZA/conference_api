@@ -184,10 +184,10 @@ class Conference.SI.TalksHandler inherits WebHandler:
                and record:GetType('speaker') eq JsonDataType:STRING
             then
                 assign speaker = record:GetCharacter('speaker').
-            if     record:Has('talkAbstract')
-               and record:GetType('talkAbstract') eq JsonDataType:STRING
+            if     record:Has('abstract')
+               and record:GetType('abstract') eq JsonDataType:STRING
             then
-                assign talkAbstract = record:GetCharacter('talkAbstract').
+                assign talkAbstract = record:GetCharacter('abstract').
             if     record:Has('contentUrl')
                and record:GetType('contentUrl') eq JsonDataType:STRING
             then

@@ -1,0 +1,83 @@
+# "url-pattern","<method>","<spring-access-expression>"
+
+############## Intercept-url definitions for the REST transport URIs ###############
+"/rest/**","*","hasAnyRole('ROLE_PSCUser')"
+
+############## Intercept-url definitions for the WEB transport  URIs ###############
+## Initial, default value; we don't want this to be open
+##"/web/**","*","hasAnyRole('ROLE_PSCUser')"
+
+### Anyone can see info about a single talk, about all talks or about one or all speakers
+###########################################################################################
+# This includes all the CHILD URLs so we need to give some thought to our URL scheme
+# "<url-pattern>","<http-method>","<spring-access-expression>"
+"/web/talks/**",		"GET", 		"allowAll()"	# Custom web-handler URLs
+"/web/pdo/dos/TalksBE",	"GET,POST", "allowAll()"	# Mapped RPC URLs
+"/web/conf/talks/**",	"GET", 		"allowAll()"	# DOH-based URLs
+
+# no child resources here
+"/web/talks/streams",			"GET", "allowAll()"		# Custom web-handler URLs
+"/web/conf/talks/streams",		"GET", "allowAll()"		# DOH-based URLs
+"/web/talks/*/schedule",		"GET", "allowAll()"		# Custom web-handler URLs
+"/web/conf/talks/*/schedule",	"GET", "allowAll()"		# DOH-based URLs
+
+## Anyone can submit a talk 
+"/web/talks", 		"POST", "allowAll()"		# Custom web-handler URLs
+# The Mapped RPC is specified above (we added POST to the <method>
+"/web/conf/talks", 	"POST", "allowAll()"		# DOH-based URLs
+
+## Only organisers and speakers can update talks
+#################################################
+## There is likely to be additional ABL-based authorisation to ensure that a speaker can only update their own talks 
+"/web/talks/*", 			"PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"		# Custom web-handler URLs
+"/web/pdo/dos/TalksBE/*", 	"PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"		# Mapped RPC URLs
+"/web/conf/talks/*", 		"PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"		# DOH-based URLs
+
+# Only organisers can remove/delete a talk
+"/web/talks/*",			"DELETE", "hasAnyRole('ROLE_CONF_ORG')"	# Custom web-handler URLs
+"/web/pdo/dos/TalksBE", "DELETE", "hasAnyRole('ROLE_CONF_ORG')"	# Mapped RPC URLs
+"/web/conf/talks/*",	"DELETE", "hasAnyRole('ROLE_CONF_ORG')"	# DOH-based URLs
+
+# Deny anything not explicitly granted
+"/web/**","*","denyAll()"
+
+############## Intercept-url definitions for the default URI space #################
+"/static/home.html","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/static/ServerStatus.html","GET","hasAnyRole('ROLE_PSCUser','ROLE_PSCAdmin','ROLE_PSCDebug')"
+
+"/server/**","GET","hasAnyRole('ROLE_PSCAdmin','ROLE_PSCDebug')"
+
+"/*","GET","permitAll()"
+
+"/static/*","GET","permitAll()" 
+
+"/static/error/*","GET","permitAll()"
+
+"/static/images/*","GET","permitAll()" 
+
+"/static/auth/*","GET","permitAll()" 
+
+"/static/**","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.htm*","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.gif","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.jpg","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.css","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.js","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.json","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.asp","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.inc","GET","hasAnyRole('ROLE_PSCUser')"
+
+# Best practice - deny anything not explicitly granted
+"/**","*","denyAll()"
+
+
+
