@@ -11,7 +11,6 @@
   ----------------------------------------------------------------------*/
 block-level on error undo, throw.
 
-using OpenEdge.Net.HTTP.Filter.Payload.MessageWriter.
 using OpenEdge.Net.HTTP.IHttpResponse.
 using OpenEdge.Net.HTTP.StatusCodeEnum.
 using OpenEdge.Web.IWebRequest.
@@ -143,15 +142,18 @@ class Conference.SI.TalksHandler inherits WebHandler:
     end method.
     
     method override protected integer HandlePost( input poRequest as OpenEdge.Web.IWebRequest ):
-        define variable talkId as character no-undo.
         define variable resp  as WebResponse no-undo.
         define variable msgBody as JsonObject no-undo.
         define variable record as JsonObject no-undo.
-        define variable talkName as character no-undo.
-        define variable streamId as character no-undo.
+        define variable hBusinessLogic as handle no-undo.
+        define variable speaker as character no-undo.
+        define variable talkAbstract as character no-undo.
+        define variable contentUrl as character no-undo.
+        define variable contentType as character no-undo.
         define variable appBase as character no-undo.
         define variable linkBase as character no-undo.
-        define variable hBusinessLogic as handle no-undo.
+        define variable talkName as character no-undo.
+        define variable talkId as character no-undo.
         
         assign resp             = new OpenEdge.Web.WebResponse()
                resp:StatusCode  = StatusCodeEnum:Created:GetValue()     //201/Created
@@ -295,7 +297,6 @@ class Conference.SI.TalksHandler inherits WebHandler:
        @param IHttpResponse The response to write */
     method protected void SendResponse(input pResponse as IHttpResponse):
         define variable writer as WebResponseWriter no-undo.
-        define variable msgWriter as MessageWriter no-undo.
         
         // write the response, whatever it is
         assign writer = new WebResponseWriter(pResponse).

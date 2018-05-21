@@ -18,6 +18,8 @@ using OpenEdge.Web.SendExceptionError.
 using OpenEdge.Web.WebHandler.
 using OpenEdge.Web.WebResponse.
 using OpenEdge.Web.WebResponseWriter.
+using Progress.Json.ObjectModel.JsonArray.
+using Progress.Json.ObjectModel.JsonDataType.
 using Progress.Json.ObjectModel.JsonObject.
 
 class Conference.SI.TalksHandler inherits WebHandler:
@@ -92,6 +94,7 @@ class Conference.SI.TalksHandler inherits WebHandler:
         define variable contentType as character no-undo.
         define variable appBase as character no-undo.
         define variable linkBase as character no-undo.
+        define variable talkName as character no-undo.
         define variable talkId as character no-undo.
         
         assign resp             = new OpenEdge.Web.WebResponse()
