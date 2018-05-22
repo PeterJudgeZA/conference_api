@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2018-05-21T16:55:08.549Z",
+	"__export_date": "2018-05-22T17:26:36.351Z",
 	"__export_source": "insomnia.desktop.app:v5.16.2",
 	"resources": [
 		{
@@ -83,11 +83,11 @@
 			"created": 1526567594087,
 			"data": {
 				"base_url": "http://localhost:8810",
-				"web_app_dos": "NEXT_dos",
-				"web_app_whs": "NEXT_whs"
+				"web_app_dos": "NEXT_dataObjSvc",
+				"web_app_whs": "NEXT_Webhandler"
 			},
 			"isPrivate": false,
-			"modified": 1526921659355,
+			"modified": 1526921749926,
 			"name": "Conference_Instance",
 			"parentId": "env_80ceeaea6506453c835d95a266214638",
 			"_type": "environment"
@@ -295,7 +295,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"name\": \"a short title\",\n\t\"speaker\": \"PSC-042\",\n\t\"abstract\": \"Spicy jalapeno bacon ipsum dolor amet veniam strip steak ground round lorem ad ham pig ex sint. Brisket pastrami voluptate in, in flank cow jowl tongue eu cupim. Esse beef ut turkey, shank burgdoggen ribeye sint biltong shankle short loin short ribs drumstick ball tip tail. Ut nisi eiusmod ball tip sausage spare ribs filet mignon sed tail in kielbasa ham. Eu venison fatback leberkas dolore chuck.\",\n\t\"contentUrl\": \"\",\n\t\"contentType\": \"\"\n}\n\t\t"
+				"text": "{\n  \"name\": \"a short title\",\n\t\"speaker\": \"ABL-012\",\n\t\"abstract\": \"Spicy jalapeno bacon ipsum dolor amet veniam strip steak ground round lorem ad ham pig ex sint. Brisket pastrami voluptate in, in flank cow jowl tongue eu cupim. Esse beef ut turkey, shank burgdoggen ribeye sint biltong shankle short loin short ribs drumstick ball tip tail. Ut nisi eiusmod ball tip sausage spare ribs filet mignon sed tail in kielbasa ham. Eu venison fatback leberkas dolore chuck.\",\n\t\"contentUrl\": \"\",\n\t\"contentType\": \"\"\n}\n\t\t"
 			},
 			"created": 1526567070289,
 			"description": "",
@@ -309,7 +309,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1526567198869.5,
 			"method": "POST",
-			"modified": 1526592450620,
+			"modified": 1527009963499,
 			"name": "(WH) Create Talk",
 			"parameters": [],
 			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
@@ -371,7 +371,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1526567198832,
 			"method": "GET",
-			"modified": 1526659801154,
+			"modified": 1526937332528,
 			"name": "(WH) Get Talks",
 			"parameters": [],
 			"parentId": "fld_06697ab8ba50442a85ecd09712fae95a",
@@ -380,7 +380,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/{{ web_app_whs  }}/web/talks?filter&top=2&skip=3",
+			"url": "{{ base_url  }}/{{ web_app_whs  }}/web/talks?filter",
 			"_type": "request"
 		},
 		{
@@ -727,7 +727,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": ""
+				"text": "{\"ttTalk\": [{\n  \"name\": \"a short title\",\n\t\"speaker\": \"ABL-012\",\n\t\"abstract\": \"Spicy jalapeno bacon ipsum dolor amet veniam strip steak ground round lorem ad ham pig ex sint. Brisket pastrami volison fatback leberkas dolore chuck.\",\n\t\"content_url\": \"\",\n\t\"content_yype\": \"\"\n}]}"
 			},
 			"created": 1526584791573,
 			"description": "",
@@ -741,7 +741,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1526584791573,
 			"method": "POST",
-			"modified": 1526659414561,
+			"modified": 1527009925295,
 			"name": "Create Talk",
 			"parameters": [],
 			"parentId": "fld_609958f8e2164e54bb0b3304fbea4d88",
@@ -763,7 +763,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1526657774520,
 			"method": "GET",
-			"modified": 1526921612852,
+			"modified": 1527009858000,
 			"name": "Get Catalog",
 			"parameters": [],
 			"parentId": "fld_609958f8e2164e54bb0b3304fbea4d88",
@@ -772,7 +772,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/{{ web_app_dos }}/web/static/dos.json",
+			"url": "{{ base_url  }}/{{ web_app_dos }}/static/dos.json",
 			"_type": "request"
 		},
 		{
