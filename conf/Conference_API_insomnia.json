@@ -83,7 +83,7 @@
 			"created": 1526567594087,
 			"data": {
 				"base_url": "http://localhost:8810",
-				"web_app_dos": "NEXT_dataObjSvc",
+				"web_app_dos": "NEXT_dos",
 				"web_app_whs": "NEXT_Webhandler"
 			},
 			"isPrivate": false,
