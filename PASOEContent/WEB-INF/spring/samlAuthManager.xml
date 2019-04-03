@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Application context containing http authentication control
+  -->
+
+<b:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:b="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.1.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"> 
+    
+    <context:annotation-config/>
+
+    <!-- Authentication Manager for SAML -->
+    <authentication-manager id="saml">
+        <authentication-provider ref="samlAuthenticationProvider"/> 
+    </authentication-manager>
+
+    <!-- SAML Authentication Provider responsible for validating of received SAML messages -->
+    <b:bean id="samlAuthenticationProvider" class="com.progress.appserv.services.security.OESamlAuthenticationProvider">
+        <b:property name="userDetails" ref="userDetails" />
+    </b:bean>
+
+    <b:bean id="userDetails" class="com.progress.appserv.services.security.OESamlUserDetailsService">
+        <b:property name="roleAttrName" value="${samlToken.UserDetails.roleAttrName}"/>
+        <b:property name="grantedAuthorities" value="${samlToken.UserDetails.defaultGrantedAuthorities}" />
+        <b:property name="rolePrefix" value="${samlToken.UserDetails.rolePrefix}"/>
+    </b:bean>
+
+    <!-- Logger for SAML messages and events -->
+    <b:bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger"/>
+
+    <!-- SAML 2.0 Holder-of-Key WebSSO Assertion Consumer -->
+    <b:bean id="hokWebSSOprofileConsumer" class="org.springframework.security.saml.websso.WebSSOProfileConsumerHoKImpl"/>
+
+    <!-- SAML 2.0 WebSSO Assertion Consumer -->
+    <b:bean id="webSSOprofileConsumer" class="com.progress.appserv.services.security.OESamlWebssoProfileConsumerImpl"/>
+
+    <!-- Class loading incoming SAML messages from httpRequest stream -->
+    <b:bean id="processor" class="com.progress.appserv.services.security.OESamlProcessorImpl">
+        <b:constructor-arg>
+            <b:list>
+                <b:ref bean="postBinding"/>
+            </b:list>
+        </b:constructor-arg>
+    </b:bean>
+
+    <!-- Bindings, encoders and decoders used for creating and parsing messages -->
+    <b:bean id="postBinding" class="com.progress.appserv.services.security.OESamlHTTPPostBinding">
+        <b:constructor-arg ref="parserPool"/>
+        <b:constructor-arg ref="decoder"/>
+        <b:constructor-arg ref="encoder"/>
+        <b:constructor-arg value="${samlToken.httpBinding.allowMethods}"/>
+    </b:bean>
+    
+    <b:bean id="decoder" class="com.progress.appserv.services.security.OESamlHTTPPostDecoder"/>
+
+    <b:bean id="encoder" class="org.opensaml.saml2.binding.encoding.HTTPPostEncoder">
+        <b:constructor-arg ref="velocityEngine"/> 
+        <b:constructor-arg index="1" value="/templates/saml2-post-binding.vm"/>
+    </b:bean>
+
+    <b:bean id="keyManager" class="org.springframework.security.saml.key.EmptyKeyManager"/>
+
+    <b:bean id="metadata" class="org.springframework.security.saml.metadata.MetadataManager">
+        <b:constructor-arg>
+            <b:list>
+                <!-- SP Metadata file -->
+                <b:bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+                    <b:constructor-arg>
+                        <b:bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
+                            <b:constructor-arg>
+                                <b:value type="java.io.File">${samlToken.metadata.spMetaDataFileLocation}</b:value>
+                            </b:constructor-arg>
+                            <b:property name="parserPool" ref="parserPool"/>
+                        </b:bean>
+                    </b:constructor-arg>
+                    <b:constructor-arg>
+                        <b:bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+                            <b:property name="local" value="true"/> 
+                            <b:property name="alias" value="default"/>
+                            <b:property name="securityProfile" value="metaiop"/>
+                            <b:property name="requireArtifactResolveSigned" value="false"/>
+                            <b:property name="requireLogoutRequestSigned" value="false"/>
+                            <b:property name="requireLogoutResponseSigned" value="false"/>
+                            <b:property name="idpDiscoveryEnabled" value="false"/>
+                            <b:property name="ecpEnabled" value="true"/>
+                        </b:bean>
+                    </b:constructor-arg>
+                </b:bean>
+
+                <!-- IDP Metadata file -->
+                <b:bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+                    <b:constructor-arg>
+                        <b:bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
+                            <b:constructor-arg>
+                                <b:value type="java.io.File">${samlToken.metadata.idpMetaDataFileLocation}</b:value>
+                            </b:constructor-arg>
+                            <b:property name="parserPool" ref="parserPool"/>
+                        </b:bean>
+                    </b:constructor-arg>
+                    <b:constructor-arg>
+                        <b:bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+                            <b:property name="local" value="false"/> 
+                            <b:property name="alias" value="default"/>
+                            <b:property name="securityProfile" value="metaiop"/>
+                            <b:property name="requireArtifactResolveSigned" value="false"/>
+                            <b:property name="requireLogoutRequestSigned" value="false"/>
+                            <b:property name="requireLogoutResponseSigned" value="false"/>
+                            <b:property name="idpDiscoveryEnabled" value="false"/>
+                            <b:property name="ecpEnabled" value="true"/>
+                        </b:bean>
+                    </b:constructor-arg>
+                </b:bean>
+            </b:list>
+        </b:constructor-arg>
+    </b:bean>
+
+
+    <!-- SAML 2.0 Web SSO profile -->
+    <b:bean id="webSSOprofile" class="org.springframework.security.saml.websso.WebSSOProfileImpl"/>
+
+    <!-- SAML 2.0 Holder-of-Key Web SSO profile -->
+    <b:bean id="hokWebSSOProfile" class="org.springframework.security.saml.websso.WebSSOProfileConsumerHoKImpl"/>
+
+    <!-- Initialization of OpenSAML library-->
+    <b:bean class="org.springframework.security.saml.SAMLBootstrap"/>
+
+    <!-- Initialization of the velocity engine -->
+    <b:bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory" factory-method="getEngine"/>
+
+    <b:bean id="parserPool" class="org.opensaml.xml.parse.StaticBasicParserPool" init-method="initialize"/>
+</b:beans>

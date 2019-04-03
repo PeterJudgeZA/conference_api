@@ -1,0 +1,38 @@
+{
+  "services": {
+    "conf": [
+    { "version": "1.0.0",
+      "operations": {}
+    },
+    { "version": "1.2.0",
+      "operations": {
+        "/talks": {
+          "GET": {},
+          "POST": {},
+          "PUT": {}
+        },
+        "/talks/{talk-id}": {
+          "DELETE": {},
+          "GET": {},
+          "PUT": {}
+        },
+        "/talks/streams": {
+          "GET": {}
+        },
+        "/talks/{talk-id}/{stream-id}": {
+          "PUT": {}
+        },
+        "/talks/{talk-id}/schedule": {
+          "GET": {}
+        }
+      },
+      "schemas": {
+        "dsTalk": {
+          "ttTalk": {},
+          "ttTimeslot": {}
+        }
+      }
+    }
+   ]
+ }
+}

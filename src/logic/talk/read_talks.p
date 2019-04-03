@@ -60,6 +60,7 @@ procedure read_param_filter_response:
            .
 end procedure.
 
+@openapi.openedge.export(type="REST", useReturnValue="false", writeDataSetBeforeImage="false").
 procedure get_filtered_talks:
     define input  parameter pFilter as character no-undo.
     define input  parameter pSkipRecs as integer no-undo.

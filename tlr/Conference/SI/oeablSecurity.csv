@@ -11,9 +11,9 @@
 ###########################################################################################
 # This includes all the CHILD URLs so we need to give some thought to our URL scheme
 # "<url-pattern>","<http-method>","<spring-access-expression>"
-"/web/talks/**",		"GET", 		"permitAll()"		# Custom web-handler URLs
-"/web/pdo/dos/TalksBE",	"GET,POST", "permitAll()"		# Mapped RPC URLs
-"/web/conf/talks/**",	"GET", 		"permitAll()"		# DOH-based URLs
+"/web/talks/**",		"GET", 		"permitAll()"	# Custom web-handler URLs
+"/web/pdo/dos/TalksBE",	"GET,POST", "permitAll()"	# Mapped RPC URLs
+"/web/conf/talks/**",	"GET", 		"permitAll()"	# DOH-based URLs
 
 # no child resources here
 "/web/talks/streams",			"GET", "permitAll()"		# Custom web-handler URLs
@@ -42,26 +42,39 @@
 "/web/**","*","denyAll()"
 
 ############## Intercept-url definitions for the default URI space #################
+"/static/home.html","GET","hasAnyRole('ROLE_PSCUser')"
+
 "/static/ServerStatus.html","GET","hasAnyRole('ROLE_PSCUser','ROLE_PSCAdmin','ROLE_PSCDebug')"
-"/static/home.html",        "GET","hasAnyRole('ROLE_PSCUser')"
-"/static/*",		        "GET","permitAll()" 
-"/static/error/*",	        "GET","permitAll()"
-"/static/images/*",	        "GET","permitAll()" 
-"/static/auth/*",	        "GET","permitAll()" 
-"/static/**",		        "GET","hasAnyRole('ROLE_PSCUser')"
 
-# Images are free
-"/**/*.htm*",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.gif",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.jpg",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.css",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.js",		"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.json",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.asp",	"GET", "hasAnyRole('ROLE_PSCUser')"
-"/**/*.inc",	"GET", "hasAnyRole('ROLE_PSCUser')"
+"/server/**","GET","hasAnyRole('ROLE_PSCAdmin','ROLE_PSCDebug')"
 
-"/server/**",	"GET", "hasAnyRole('ROLE_PSCAdmin','ROLE_PSCDebug')"
-"/*",		 	"GET", "permitAll()"
+"/*","GET","permitAll()"
+
+"/static/*","GET","permitAll()" 
+
+"/static/error/*","GET","permitAll()"
+
+"/static/images/*","GET","permitAll()" 
+
+"/static/auth/*","GET","permitAll()" 
+
+"/static/**","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.htm*","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.gif","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.jpg","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.css","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.js","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.json","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.asp","GET","hasAnyRole('ROLE_PSCUser')"
+
+"/**/*.inc","GET","hasAnyRole('ROLE_PSCUser')"
 
 # Best practice - deny anything not explicitly granted
 "/**","*","denyAll()"

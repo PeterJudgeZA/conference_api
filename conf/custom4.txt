@@ -1,0 +1,26 @@
+            if     record:Has('name')
+               and record:GetType('name') eq JsonDataType:STRING
+            then
+                assign talkName = record:GetCharacter('name').
+            if     record:Has('speaker')
+               and record:GetType('speaker') eq JsonDataType:STRING
+            then
+                assign speaker = record:GetCharacter('speaker').
+            if     record:Has('abstract')
+               and record:GetType('abstract') eq JsonDataType:STRING
+            then
+                assign abstract = record:GetCharacter('abstract').
+            if     record:Has('contentUrl')
+               and record:GetType('contentUrl') eq JsonDataType:STRING
+            then
+                assign contentUrl = record:GetCharacter('contentUrl').
+            if     record:Has('contentType')
+               and record:GetType('contentType') eq JsonDataType:STRING
+            then
+                assign contentType = record:GetCharacter('contentType').
+            
+            run logic/talk/new_talk.p single-run set hBusinessLogic.
+            run create_talk in hBusinessLogic (talkName, speaker, abstract, contentUrl, contentType, 
+                                               output talkId).
+            
+            resp:SetHeader('Location', linkBase + '/' + talkId).

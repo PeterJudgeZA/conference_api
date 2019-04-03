@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Application context containing http authentication control
+  -->
+
+<b:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:b="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.1.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"> 
+    
+    <context:annotation-config/>
+    <!-- *********************************************************************
+         WARNING: EDITS TO THIS FILE MAY BE OVERWRITTEN BY OPENEDGE OEABL
+         WEB APPLICATION UPDATE/PATCH PROCESS. CUSTOM EDITS MUST BE MANUALLY
+         BACKED UP PRIOR TO ANY UPDATE/PATCH PROCESS EXECUTION.
+
+         MAKE ALL CONFIGURATION EDITS IN THE oeablSecurity.properties FILE.
+         ********************************************************************* -->
+
+    <!-- Import the OpenEdge filters that span all Login Model configuations -->
+
+    <b:import resource="sharedAuthFilters.xml"/> 
+
+    <!-- Processing filter for WebSSO profile messages -->
+    <b:bean id="samlWebSSOProcessingFilter" class="com.progress.appserv.services.security.OESamlWebSSOProcessingFilter">
+        <b:constructor-arg value="/"/>
+        <b:property name="authenticationManager" ref="saml"/>
+        <b:property name="continueChainBeforeSuccessfulAuthentication" value="true"/>
+        <b:property name="authenticationSuccessHandler" ref="successRedirectHandler"/>
+        <b:property name="authenticationFailureHandler" ref="failureRedirectHandler"/>
+        <b:property name="checkForACSEndpointUrl" value="${samlToken.webSSOProcessingFilter.checkForACSEndpointUrl}"/>
+        <b:property name="responseSkew" value="${samlToken.webSSOProcessingFilter.responseSkew}"/>
+    </b:bean>
+
+    <!-- Handler deciding where to redirect user after successful login -->
+    <b:bean id="successRedirectHandler"
+          class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+        <b:property name="defaultTargetUrl" value="/"/>
+    </b:bean>
+
+    <b:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"></b:bean>
+    
+    <!-- Handler deciding where to redirect user after failed login -->
+    <b:bean id="failureRedirectHandler" class="com.progress.appserv.services.security.OESamlSimpleUrlAuthenticationFailureHandler">
+        <b:property name="useForward" value="true"/>
+        <b:property name="defaultFailureUrl" value="/jsp/errorPage.jsp"/>
+    </b:bean>
+    
+    <!-- Provider of default SAML Context -->
+    <b:bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl">
+       <b:property name="storageFactory">
+             <b:bean class="org.springframework.security.saml.storage.EmptyStorageFactory"/>
+       </b:property>
+    </b:bean>
+
+    <b:bean id="samlFilterSecurityInterceptor" 
+        class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor" >  
+        <b:property name="authenticationManager" ref="${http.authmanager}"/>
+        <b:property name="accessDecisionManager" ref="defaultAccessDecisionManager"/>
+        <b:property name="securityMetadataSource" >
+            <b:bean id="defaultOEMetadataSource" name="all"
+                class="com.progress.appserv.services.security.OEMetadataSource" >
+                <b:constructor-arg value="all" />
+                <b:constructor-arg value="${oemetadatasource.all.requestmatcher}" />
+                <b:property name="interceptUrlFilePath" value="${oemetadatasource.all.csvpath}" />
+                <b:property name="defaultURL" value="/**" />
+            </b:bean>
+        </b:property>
+    </b:bean>
+
+    <!-- The AccessDecisionManager used by the default URL <http pattern="/**" space.
+         Executes the 'voter' beans that decide whether the client request is allowed.
+         Referenced by the defaultFilterSecurityInterceptor bean below. 
+    -->
+    <b:bean id="defaultAccessDecisionManager" 
+            class="org.springframework.security.access.vote.AffirmativeBased">
+        <b:constructor-arg>
+            <util:list>
+                <b:bean id="defaultWebVoter" 
+                        class="org.springframework.security.web.access.expression.WebExpressionVoter">
+                    <b:property name="expressionHandler" ref="DefaultWebExpressionHandler" />
+                </b:bean>
+            </util:list>
+        </b:constructor-arg>
+    </b:bean>
+
+    <b:bean id="DefaultWebExpressionHandler"
+            class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" >
+            <b:property name="defaultRolePrefix" value="${samlToken.UserDetails.rolePrefix}" />
+    </b:bean>
+
+      
+</b:beans>
