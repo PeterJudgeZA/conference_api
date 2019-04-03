@@ -1,8 +1,3 @@
-ADD SEQUENCE "seq_name_cnt"
-  INITIAL 1
-  INCREMENT 1
-  CYCLE-ON-LIMIT no
-
 ADD TABLE "attendee"
   AREA "Data Area"
   DUMP-NAME "attendee"
@@ -42,7 +37,7 @@ ADD FIELD "organisation" OF "attendee" AS character
   MAX-WIDTH 16
   ORDER 50
 
-ADD INDEX "PK_ID" ON "attendee" 
+ADD INDEX "pu" ON "attendee" 
   AREA "Data Area"
   UNIQUE
   PRIMARY
@@ -80,7 +75,7 @@ ADD FIELD "attendee" OF "rating" AS character
   MAX-WIDTH 16
   ORDER 40
 
-ADD INDEX "PK_timeslt_att" ON "rating" 
+ADD INDEX "pu" ON "rating" 
   AREA "Data Area"
   UNIQUE
   PRIMARY
@@ -112,7 +107,7 @@ ADD FIELD "capacity" OF "room" AS integer
   MAX-WIDTH 4
   ORDER 30
 
-ADD INDEX "PK_ID" ON "room" 
+ADD INDEX "pu" ON "room" 
   AREA "Data Area"
   UNIQUE
   PRIMARY
@@ -159,13 +154,12 @@ ADD FIELD "photo" OF "speaker" AS blob
   LOB-SIZE 100M
   ORDER 50
 
-ADD INDEX "PK_ID" ON "speaker" 
+ADD INDEX "pu" ON "speaker" 
   AREA "Data Area"
-  UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
 
-ADD INDEX "IDX_Name" ON "speaker" 
+ADD INDEX "idx2" ON "speaker" 
   AREA "Data Area"
   INDEX-FIELD "name" ASCENDING 
 
@@ -222,17 +216,17 @@ ADD FIELD "talk_status" OF "talk" AS character
   MAX-WIDTH 16
   ORDER 70
 
-ADD INDEX "PK_ID" ON "talk" 
+ADD INDEX "pu" ON "talk" 
   AREA "Data Area"
   UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
 
-ADD INDEX "IDX_Speaker" ON "talk" 
+ADD INDEX "idx1" ON "talk" 
   AREA "Data Area"
   INDEX-FIELD "speaker" ASCENDING 
 
-ADD INDEX "IDX_Talk_Status" ON "talk" 
+ADD INDEX "idx3" ON "talk" 
   AREA "Data Area"
   INDEX-FIELD "talk_status" ASCENDING 
 
@@ -275,24 +269,24 @@ ADD FIELD "duration" OF "timeslot" AS integer
   MAX-WIDTH 4
   ORDER 50
 
-ADD INDEX "PK_ID" ON "timeslot" 
+ADD INDEX "pu" ON "timeslot" 
   AREA "Data Area"
+  UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
+
+ADD INDEX "idx2" ON "timeslot" 
+  AREA "Data Area"
   INDEX-FIELD "talk" ASCENDING 
 
-ADD INDEX "IDX_Room" ON "timeslot" 
+ADD INDEX "idx3" ON "timeslot" 
   AREA "Data Area"
   UNIQUE
   INDEX-FIELD "room" ASCENDING 
   INDEX-FIELD "start_at" ASCENDING 
 
-ADD INDEX "IDX_Talk" ON "timeslot" 
-  AREA "Data Area"
-  INDEX-FIELD "talk" ASCENDING 
-
 .
 PSC
-cpstream=ISO8859-1
+cpstream=UTF-8
 .
-0000005288
+0000005118

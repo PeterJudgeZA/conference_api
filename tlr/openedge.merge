@@ -12,5 +12,5 @@
     handler7  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}/{stream-id} 
     handler8  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/{talk-id}
     handler9  = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks/streams
-    handler10 = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks
-    handler11 = OpenEdge.Web.DataObject.DataObjectHandler: /services
+    handler10 = OpenEdge.Web.DataObject.DataObjectHandler: /conf/talks       
+    handler11 = OpenEdge.Web.DataObject.DataObjectHandler: /services/
