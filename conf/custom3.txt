@@ -1,0 +1,13 @@
+            ASSIGN topRecs = integer(poRequest:URI:GetQueryValue('top'))
+                   skipRecs = integer(poRequest:URI:GetQueryValue('skip'))
+                   filter = poRequest:URI:GetQueryValue('filter')
+                   record = NEW JsonObject()
+                   .
+            RUN logic/talk/read_talks.p SINGLE-RUN SET hBusinessLogic.
+            RUN get_filtered_talks IN hBusinessLogic (INPUT filter, skipRecs, topRecs, OUTPUT TABLE ttTalk, OUTPUT qryCnt).
+            
+            BUFFER ttTalk:write-json('JsonObject', record, TRUE).
+            
+            msgBody:Add('data', record).
+            msgBody:Add('count', qryCnt).
+            
