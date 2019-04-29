@@ -1,6 +1,19 @@
 #
-b .\conf.b1
+# Primary Recovery Area
+b .
 #
-d "Schema Area":6,64;1 .\conf.d1
+# After-Image Area
+a .
 #
-d "Data Area":20,64;8 .\conf_20.d1
+# Schema Area (System Tables)
+# Use 64 for 8K DB Block Sizes
+d "Schema Area":6,64;1 .
+#
+# Default Data Area for Application
+d "Data Area":10,256;8 .
+#
+# Default Index Area for Application
+d "Index Area":20,32;8 .
+#
+# Default LOB Area for Application
+d "LOB Area":30,32;8 .

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/databaseConnection.xsd">
+<databaseconnection identifier="conf">
+<name>conf</name>
+<description/>
+<physicalname>C:\Databases\conference\conf.db</physicalname>
+<logicalname/>
+<aliases/>
+<group/>
+<host>localhost</host>
+<service>2468</service>
+<userID/>
+<password/>
+<connectionparameters/>
+<SQLIdentifier/>
+<autoStartServer>true</autoStartServer>
+<serverParameters>-db C:\Databases\conference\conf.db -S 2468 </serverParameters>
+<autoShutdownServer>true</autoShutdownServer>
+<OEVersion>12.0</OEVersion>
+</databaseconnection>
+</root>

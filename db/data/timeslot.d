@@ -1,0 +1,15 @@
+"ABL-004" "RM-002" 2019-05-06T10:00:00.000-04:00 "SLOT-005" 60
+"ABL-007" "RM-002" 2019-05-06T12:00:00.000-04:00 "SLOT-008" 60
+"ABL-010" "RM-002" 2019-05-06T14:00:00.000-04:00 "SLOT-011" 60
+.
+PSC
+filename=timeslot
+records=0000000000003
+ldbname=conf
+timestamp=2019/04/18-13:43:30
+numformat=44,46
+dateformat=mdy-1950
+map=NO-MAP
+cpstream=UTF-8
+.
+0000000195

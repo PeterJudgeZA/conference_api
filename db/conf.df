@@ -1,3 +1,8 @@
+ADD SEQUENCE "seq_name_cnt"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+
 ADD TABLE "attendee"
   AREA "Data Area"
   DUMP-NAME "attendee"
@@ -38,7 +43,7 @@ ADD FIELD "organisation" OF "attendee" AS character
   ORDER 50
 
 ADD INDEX "pu" ON "attendee" 
-  AREA "Data Area"
+  AREA "Index Area"
   UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
@@ -76,7 +81,7 @@ ADD FIELD "attendee" OF "rating" AS character
   ORDER 40
 
 ADD INDEX "pu" ON "rating" 
-  AREA "Data Area"
+  AREA "Index Area"
   UNIQUE
   PRIMARY
   INDEX-FIELD "timeslot" ASCENDING 
@@ -108,7 +113,7 @@ ADD FIELD "capacity" OF "room" AS integer
   ORDER 30
 
 ADD INDEX "pu" ON "room" 
-  AREA "Data Area"
+  AREA "Index Area"
   UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
@@ -149,18 +154,19 @@ ADD FIELD "photo" OF "speaker" AS blob
   FORMAT "x(8)"
   INITIAL ?
   POSITION 6
-  LOB-AREA "Data Area"
+  LOB-AREA "LOB Area"
   LOB-BYTES 104857600
   LOB-SIZE 100M
   ORDER 50
 
 ADD INDEX "pu" ON "speaker" 
-  AREA "Data Area"
+  AREA "Index Area"
+  UNIQUE
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
 
-ADD INDEX "idx2" ON "speaker" 
-  AREA "Data Area"
+ADD INDEX "idxName" ON "speaker" 
+  AREA "Index Area"
   INDEX-FIELD "name" ASCENDING 
 
 ADD TABLE "talk"
@@ -222,12 +228,12 @@ ADD INDEX "pu" ON "talk"
   PRIMARY
   INDEX-FIELD "id" ASCENDING 
 
-ADD INDEX "idx1" ON "talk" 
-  AREA "Data Area"
+ADD INDEX "idxSpeaker" ON "talk" 
+  AREA "Index Area"
   INDEX-FIELD "speaker" ASCENDING 
 
-ADD INDEX "idx3" ON "talk" 
-  AREA "Data Area"
+ADD INDEX "idxStatus" ON "talk" 
+  AREA "Index Area"
   INDEX-FIELD "talk_status" ASCENDING 
 
 ADD TABLE "timeslot"
