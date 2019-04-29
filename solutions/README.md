@@ -13,7 +13,7 @@ Conference/SI/Talks.cls | A completed service interface for accessing talks logi
 
 
 
-## Other
+## Implementing REST Service Interfaces workshop
  File | Purpose 
 ---- | ---- 
 Conference/SI/TalksHandler.cls | A complete WebHandler service interface implementation for accessing talks logic.
