@@ -44,10 +44,11 @@ CLASS Conference.SI.Talks:
                                       OUTPUT ttTalk.id).
         END.
         
-        FINALLY:
-            DELETE OBJECT hProc.
-        END FINALLY.            
-    END METHOD.
+        // This block removed to leak
+		//FINALLY:
+        //    DELETE OBJECT hProc.
+        //END FINALLY.      
+	END METHOD.
         
     /* Submits are processed in row-state order
         1. DELETED

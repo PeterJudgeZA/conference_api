@@ -28,9 +28,10 @@ CLASS Conference.SI.Talks:
                                       OUTPUT ttTalk.id).
         END.
         
-        FINALLY:
-            DELETE OBJECT hProc.
-        END FINALLY.            
+        // This block removed to leak
+		//FINALLY:
+        //    DELETE OBJECT hProc.
+        //END FINALLY.            
     END METHOD.
     
     METHOD PUBLIC VOID ReadTalks(INPUT filter AS CHARACTER,
