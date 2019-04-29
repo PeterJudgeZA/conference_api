@@ -27,6 +27,7 @@ procedure set_talk_status:
     define buffer bSlot for timeslot.
     
     Assert:NotNullOrEmpty(pTalk, 'Talk id').
+    Assert:NotNull(pStatus, 'Talk status').
     
     find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
     if available bTalk then
@@ -93,6 +94,35 @@ procedure update_talks:
     
     if updateError:NumMessages gt 0 then
         return error updateError.
+end procedure.
+
+procedure update_single_talk:
+    define input parameter pTalk as character no-undo.
+    define input parameter pName as character no-undo.
+    define input parameter pSpeaker as character no-undo.
+    define input parameter pAbstract as character no-undo.
+    define input parameter pStatus as TalkStatusEnum no-undo.
+    define input parameter pContentUrl as character no-undo.
+    define input parameter pContentType as character no-undo.
+    
+    define buffer bTalk for talk.
+    
+    Assert:NotNullOrEmpty(pTalk, 'Talk ID').
+    
+    find bTalk where bTalk.id eq pTalk exclusive-lock no-error.
+    if available bTalk then
+    do:
+        assign bTalk.name         = pName
+               bTalk.speaker      = pSpeaker
+               bTalk.abstract     = pAbstract
+               bTalk.content_url  = pContentUrl
+               bTalk.content_type = pContentType
+               .
+        if string(pStatus) ne bTalk.talk_status then
+            run set_talk_status(bTalk.id, pStatus).
+    end.
+    else
+        return error new AppError(substitute('Talk &1 not found', pTalk), 0).
 end procedure.
 
 procedure cancel_talk:

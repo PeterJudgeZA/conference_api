@@ -1,0 +1,52 @@
+/** This is free and unencumbered software released into the public domain.
+    Anyone is free to copy, modify, publish, use, compile, sell, or
+    distribute this software, either in source code form or as a compiled
+    binary, for any purpose, commercial or non-commercial, and by any
+    means.  **/
+/*------------------------------------------------------------------------
+    File        : SI.Talks
+    Description : Service interface for working with talks
+    Author(s)   : pjudge
+    Notes       : 
+  ----------------------------------------------------------------------*/
+BLOCK-LEVEL ON ERROR UNDO, THROW.
+
+CLASS Conference.SI.Talks: 
+    {logic/shared/talks_dataset.i}
+    
+    METHOD PUBLIC VOID CreateTalks(INPUT-OUTPUT DATASET dsTalk):
+        DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
+        
+        RUN logic/talk/new_talks.p PERSISTENT SET hProc.
+        
+        FOR EACH ttTalk:
+            RUN create_talk IN hProc (INPUT ttTalk.name,
+                                      INPUT ttTalk.speaker,
+                                      INPUT ttTalk.abstract,
+                                      INPUT ttTalk.content_url,
+                                      INPUT ttTalk.content_type,
+                                      OUTPUT ttTalk.id).
+        END.
+        
+        FINALLY:
+            DELETE OBJECT hProc.
+        END FINALLY.            
+    END METHOD.
+    
+    METHOD PUBLIC VOID ReadTalks(INPUT filter AS CHARACTER,
+                                 OUTPUT DATASET dsTalk):
+    END METHOD.
+    
+        
+    /* Submits are processed in row-state order
+        1. DELETED
+        2. CREATED
+        3. MODIFIED    
+    */    
+    METHOD PUBLIC VOID SubmitTalks(INPUT-OUTPUT DATASET dsTalk):
+    END METHOD.
+    
+    METHOD PUBLIC VOID UpdateTalks(INPUT-OUTPUT DATASET dsTalk):
+    END METHOD.    
+
+END CLASS.

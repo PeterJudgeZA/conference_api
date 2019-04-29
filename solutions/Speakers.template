@@ -1,0 +1,37 @@
+/** This is free and unencumbered software released into the public domain.
+    Anyone is free to copy, modify, publish, use, compile, sell, or
+    distribute this software, either in source code form or as a compiled
+    binary, for any purpose, commercial or non-commercial, and by any
+    means.  **/
+/*------------------------------------------------------------------------
+    File        : SI.Speakers
+    Description : Service interface for working with speakers 
+    Author(s)   : pjudge
+    Notes       : 
+  ----------------------------------------------------------------------*/
+BLOCK-LEVEL ON ERROR UNDO, THROW.
+
+CLASS Conference.SI.Speakers: 
+    {logic/shared/speaker_dataset.i}
+
+    METHOD PUBLIC VOID ReadSpeakers(INPUT filter AS CHARACTER,
+                                    OUTPUT DATASET dsSpeaker):
+    END METHOD.
+    
+    METHOD PUBLIC VOID CreateSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
+    END METHOD.    
+    
+    /* Submits are processed in row-state order
+        1. DELETED
+        2. CREATED
+        3. MODIFIED    */
+    METHOD PUBLIC VOID SubmitSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
+    END METHOD.
+    
+    METHOD PUBLIC VOID UpdateSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
+    END METHOD.    
+    
+    METHOD PUBLIC VOID DeleteSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
+    END METHOD.
+    
+END CLASS.

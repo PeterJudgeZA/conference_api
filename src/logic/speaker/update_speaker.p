@@ -16,6 +16,24 @@ using Progress.Lang.AppError.
 {logic/shared/speaker_dataset.i }
 
 /* ***************************  Main Block  ************************** */
+procedure update_single_speaker:
+    define input parameter pId as character no-undo.
+    define input parameter pName as character no-undo.
+    define input parameter pBio as character no-undo.
+    define input parameter pUrl as character no-undo.
+
+    define buffer bSpeaker for Speaker.
+    
+    find bSpeaker where bSpeaker.id eq ttSpeaker.id exclusive-lock no-error.
+    if available bSpeaker then
+        assign bSpeaker.name = pName
+               bSpeaker.bio  = pBio
+               bSpeaker.url  = pUrl
+               .
+    else
+        return error new AppError(substitute('Speaker &1 not found', ttSpeaker.id), 0).
+end procedure.
+
 procedure update_speaker:
     define input parameter table for ttSpeaker.
     
