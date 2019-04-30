@@ -10,6 +10,8 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Main Block  ************************** */
+block-level on error undo, throw.
+
 using OpenEdge.Core.String.
 using OpenEdge.Net.URI.
 using Progress.Lang.AppError.

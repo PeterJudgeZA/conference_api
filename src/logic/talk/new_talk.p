@@ -10,6 +10,7 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
+block-level on error undo, throw.
 
 using Conference.BusinessLogic.TalkStatusEnum.
 using OpenEdge.Core.Assert.

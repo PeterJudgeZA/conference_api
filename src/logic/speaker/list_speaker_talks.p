@@ -4,6 +4,7 @@
     binary, for any purpose, commercial or non-commercial, and by any
     means.  **/
 
+block-level on error undo, throw.
 
 procedure get_talks:
     define input  parameter pId as character no-undo.

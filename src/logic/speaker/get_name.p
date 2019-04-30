@@ -10,7 +10,7 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
-
+block-level on error undo, throw.
 using Progress.Lang.AppError.
 
 {logic/shared/speaker_dataset.i }

@@ -10,6 +10,7 @@
     Notes       :
   ----------------------------------------------------------------------*/
 /* ***************************  Definitions  ************************** */
+block-level on error undo, throw.
 
 using Progress.Lang.AppError.
 
