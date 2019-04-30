@@ -52,7 +52,6 @@ CLASS Conference.SI.Talks:
         
         FINALLY:
             CLOSE QUERY qryTalk.
-        //    DELETE OBJECT hProc.
         END FINALLY.      
     END METHOD.
         

@@ -16,22 +16,27 @@ CLASS Conference.SI.Talks:
     
     METHOD PUBLIC VOID CreateTalks(INPUT-OUTPUT DATASET dsTalk):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
+        DEFINE QUERY qryTalk FOR ttTalk.
         
         RUN logic/talk/new_talk.p PERSISTENT SET hProc.
-        
-        FOR EACH ttTalk:
-            RUN create_talk IN hProc (INPUT ttTalk.name,
-                                      INPUT ttTalk.speaker,
-                                      INPUT ttTalk.abstract,
-                                      INPUT ttTalk.content_url,
-                                      INPUT ttTalk.content_type,
+       
+        // We're using a query here because we update the ID field, which is the 
+        // primary unique value
+        OPEN QUERY qryTalk PRESELECT EACH ttTalk.   
+        GET FIRST qryTalk.
+        DO WHILE AVAILABLE ttTalk:
+            RUN create_talk IN hProc (INPUT  ttTalk.name,
+                                      INPUT  ttTalk.speaker,
+                                      INPUT  ttTalk.abstract,
+                                      INPUT  ttTalk.content_url,
+                                      INPUT  ttTalk.content_type,
                                       OUTPUT ttTalk.id).
+            GET NEXT qryTalk.
         END.
         
-        // This block removed to leak
-		//FINALLY:
-        //    DELETE OBJECT hProc.
-        //END FINALLY.            
+        FINALLY:
+            CLOSE QUERY qryTalk.
+        END FINALLY.      
     END METHOD.
     
     METHOD PUBLIC VOID ReadTalks(INPUT filter AS CHARACTER,
@@ -49,5 +54,5 @@ CLASS Conference.SI.Talks:
     
     METHOD PUBLIC VOID UpdateTalks(INPUT-OUTPUT DATASET dsTalk):
     END METHOD.    
-
+    
 END CLASS.
