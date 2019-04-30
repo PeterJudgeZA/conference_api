@@ -10,6 +10,7 @@ Speakers.template | A template for the Data Object Service interface for speaker
 Talks.template | A template for the Data Object Service interface for talks. Contains the CRUDS operation signatures.
 Conference/SI/Speakers.cls | A completed service interface for accessing speakers logic 
 Conference/SI/Talks.cls | A completed service interface for accessing talks logic 
+oeablSecurity.csv | URI authorization for the ConfSvc's `/talks` and `/speakers` resources
 
 
 
