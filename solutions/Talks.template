@@ -17,7 +17,7 @@ CLASS Conference.SI.Talks:
     METHOD PUBLIC VOID CreateTalks(INPUT-OUTPUT DATASET dsTalk):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
         
-        RUN logic/talk/new_talks.p PERSISTENT SET hProc.
+        RUN logic/talk/new_talk.p PERSISTENT SET hProc.
         
         FOR EACH ttTalk:
             RUN create_talk IN hProc (INPUT ttTalk.name,

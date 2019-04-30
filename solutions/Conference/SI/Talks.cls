@@ -33,7 +33,7 @@ CLASS Conference.SI.Talks:
     METHOD PUBLIC VOID CreateTalks(INPUT-OUTPUT DATASET dsTalk):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
         
-        RUN logic/talk/new_talks.p PERSISTENT SET hProc.
+        RUN logic/talk/new_talk.p PERSISTENT SET hProc.
         
         FOR EACH ttTalk:
             RUN create_talk IN hProc (INPUT ttTalk.name,
@@ -71,7 +71,7 @@ CLASS Conference.SI.Talks:
         DELETE OBJECT hProc.
         
         // creates
-        RUN logic/talk/new_talks.p PERSISTENT SET hProc.
+        RUN logic/talk/new_talk.p PERSISTENT SET hProc.
         FOR EACH btTalk WHERE ROW-STATE(btTalk) EQ ROW-CREATED:
             
             FIND ttTalk WHERE ROWID(ttTalk) EQ BUFFER btTalk:AFTER-ROWID.
@@ -86,7 +86,7 @@ CLASS Conference.SI.Talks:
         DELETE OBJECT hProc.
     
         // updates         
-        RUN logic/talk/update_talks.p PERSISTENT SET hProc.
+        RUN logic/talk/update_talk.p PERSISTENT SET hProc.
         
         FOR EACH btTalk WHERE ROW-STATE(btTalk) EQ ROW-MODIFIED:
             
@@ -98,7 +98,6 @@ CLASS Conference.SI.Talks:
                                              INPUT ttTalk.speaker,
                                              INPUT ttTalk.abstract,
                                              INPUT talkStatus,
-                                             
                                              INPUT ttTalk.content_url,
                                              INPUT ttTalk.content_type).
         END.
@@ -113,7 +112,7 @@ CLASS Conference.SI.Talks:
     METHOD PUBLIC VOID UpdateTalks(INPUT-OUTPUT DATASET dsTalk):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
         
-        RUN logic/talk/new_talks.p SINGLE-RUN SET hProc.
+        RUN logic/talk/update_talk.p SINGLE-RUN SET hProc.
         
         RUN update_talks IN hProc (INPUT-OUTPUT table ttTalk).
     END METHOD.    

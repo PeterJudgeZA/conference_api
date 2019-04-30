@@ -31,7 +31,7 @@ CLASS Conference.SI.Speakers:
     METHOD PUBLIC VOID CreateSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
         
-        RUN logic/speaker/new_speakers.p PERSISTENT SET hProc.
+        RUN logic/speaker/new_speaker.p PERSISTENT SET hProc.
         
         FOR EACH ttSpeaker:
             RUN create_speaker IN hProc (INPUT  ttSpeaker.name,
@@ -64,8 +64,8 @@ CLASS Conference.SI.Speakers:
             
             FIND ttSpeaker WHERE ROWID(ttSpeaker) EQ BUFFER btSpeaker:AFTER-ROWID.
             
-            RUN create_talk IN hProc (INPUT  ttSpeaker.name,
-                                      OUTPUT ttSpeaker.id).
+            RUN create_speaker IN hProc (INPUT  ttSpeaker.name,
+                                         OUTPUT ttSpeaker.id).
         END.
         DELETE OBJECT hProc.
     
@@ -74,6 +74,7 @@ CLASS Conference.SI.Speakers:
         
         FOR EACH btSpeaker WHERE ROW-STATE(btSpeaker) EQ ROW-MODIFIED:
             FIND ttSpeaker WHERE ROWID(ttSpeaker) EQ BUFFER btSpeaker:AFTER-ROWID.
+            
             RUN update_single_speaker IN hProc (INPUT ttSpeaker.id,
                                                 INPUT ttSpeaker.name,
                                                 INPUT ttSpeaker.bio,
@@ -89,7 +90,7 @@ CLASS Conference.SI.Speakers:
     METHOD PUBLIC VOID UpdateSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
         
-        RUN logic/speaker/new_Speakers.p SINGLE-RUN SET hProc.
+        RUN logic/speaker/update_speaker.p SINGLE-RUN SET hProc.
         
         RUN update_speaker IN hProc (INPUT table ttSpeaker).
     END METHOD.    
