@@ -1,0 +1,302 @@
+ADD SEQUENCE "seq_name_cnt"
+  INITIAL 1
+  INCREMENT 1
+  CYCLE-ON-LIMIT no
+
+ADD TABLE "attendee"
+  AREA "Data Area"
+  DUMP-NAME "attendee"
+
+ADD FIELD "id" OF "attendee" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "name" OF "attendee" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 3
+  MAX-WIDTH 16
+  ORDER 20
+
+ADD FIELD "url" OF "attendee" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 4
+  MAX-WIDTH 16
+  ORDER 30
+
+ADD FIELD "type" OF "attendee" AS integer 
+  FORMAT "->,>>>,>>9"
+  INITIAL "0"
+  POSITION 5
+  MAX-WIDTH 4
+  ORDER 40
+
+ADD FIELD "organisation" OF "attendee" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 6
+  MAX-WIDTH 16
+  ORDER 50
+
+ADD INDEX "pu" ON "attendee" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "id" ASCENDING 
+
+ADD TABLE "rating"
+  AREA "Data Area"
+  DUMP-NAME "rating"
+
+ADD FIELD "timeslot" OF "rating" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "stars" OF "rating" AS integer 
+  FORMAT "->,>>>,>>9"
+  INITIAL "0"
+  POSITION 3
+  MAX-WIDTH 4
+  ORDER 20
+
+ADD FIELD "comment" OF "rating" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 4
+  MAX-WIDTH 16
+  ORDER 30
+
+ADD FIELD "attendee" OF "rating" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 5
+  MAX-WIDTH 16
+  ORDER 40
+
+ADD INDEX "pu" ON "rating" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "timeslot" ASCENDING 
+  INDEX-FIELD "attendee" ASCENDING 
+
+ADD TABLE "room"
+  AREA "Data Area"
+  DUMP-NAME "room"
+
+ADD FIELD "id" OF "room" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "name" OF "room" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 3
+  MAX-WIDTH 16
+  ORDER 20
+
+ADD FIELD "capacity" OF "room" AS integer 
+  FORMAT "->,>>>,>>9"
+  INITIAL "0"
+  POSITION 4
+  MAX-WIDTH 4
+  ORDER 30
+
+ADD INDEX "pu" ON "room" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "id" ASCENDING 
+
+ADD TABLE "speaker"
+  AREA "Data Area"
+  DUMP-NAME "speaker"
+
+ADD FIELD "id" OF "speaker" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "name" OF "speaker" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 3
+  MAX-WIDTH 16
+  ORDER 20
+
+ADD FIELD "bio" OF "speaker" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 4
+  MAX-WIDTH 16
+  ORDER 30
+
+ADD FIELD "url" OF "speaker" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 5
+  MAX-WIDTH 16
+  ORDER 40
+
+ADD FIELD "photo" OF "speaker" AS blob 
+  FORMAT "x(8)"
+  INITIAL ?
+  POSITION 6
+  LOB-AREA "Data Area"
+  LOB-BYTES 104857600
+  LOB-SIZE 100M
+  ORDER 50
+
+ADD INDEX "pu_idx" ON "speaker" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "id" ASCENDING 
+
+ADD INDEX "idx2" ON "speaker" 
+  AREA "Data Area"
+  INDEX-FIELD "name" ASCENDING 
+
+ADD INDEX "pu" ON "speaker" 
+  AREA "Data Area"
+  INDEX-FIELD "id" ASCENDING 
+
+ADD TABLE "talk"
+  AREA "Data Area"
+  DUMP-NAME "talk"
+
+ADD FIELD "id" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "name" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 3
+  MAX-WIDTH 16
+  ORDER 20
+
+ADD FIELD "speaker" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 4
+  MAX-WIDTH 16
+  ORDER 30
+
+ADD FIELD "abstract" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 5
+  MAX-WIDTH 16
+  ORDER 40
+
+ADD FIELD "content_url" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 6
+  MAX-WIDTH 16
+  ORDER 50
+
+ADD FIELD "content_type" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 7
+  MAX-WIDTH 16
+  ORDER 60
+
+ADD FIELD "talk_status" OF "talk" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 8
+  MAX-WIDTH 16
+  ORDER 70
+
+ADD INDEX "pu" ON "talk" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "id" ASCENDING 
+
+ADD INDEX "idx1" ON "talk" 
+  AREA "Data Area"
+  INDEX-FIELD "speaker" ASCENDING 
+
+ADD INDEX "idx3" ON "talk" 
+  AREA "Data Area"
+  INDEX-FIELD "talk_status" ASCENDING 
+
+ADD TABLE "timeslot"
+  AREA "Data Area"
+  DUMP-NAME "timeslot"
+
+ADD FIELD "talk" OF "timeslot" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 2
+  MAX-WIDTH 16
+  ORDER 10
+
+ADD FIELD "room" OF "timeslot" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 3
+  MAX-WIDTH 16
+  ORDER 20
+
+ADD FIELD "start_at" OF "timeslot" AS datetime-tz 
+  FORMAT "99/99/9999 HH:MM:SS.SSS+HH:MM"
+  INITIAL ?
+  POSITION 4
+  MAX-WIDTH 12
+  ORDER 30
+
+ADD FIELD "id" OF "timeslot" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  POSITION 5
+  MAX-WIDTH 16
+  ORDER 40
+
+ADD FIELD "duration" OF "timeslot" AS integer 
+  FORMAT "->,>>>,>>9"
+  INITIAL "0"
+  POSITION 6
+  MAX-WIDTH 4
+  ORDER 50
+
+ADD INDEX "pu" ON "timeslot" 
+  AREA "Data Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "id" ASCENDING 
+
+ADD INDEX "idx2" ON "timeslot" 
+  AREA "Data Area"
+  INDEX-FIELD "talk" ASCENDING 
+
+ADD INDEX "idx3" ON "timeslot" 
+  AREA "Data Area"
+  UNIQUE
+  INDEX-FIELD "room" ASCENDING 
+  INDEX-FIELD "start_at" ASCENDING 
+
+.
+PSC
+cpstream=ISO8859-1
+.
+0000005295

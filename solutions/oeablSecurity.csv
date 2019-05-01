@@ -1,5 +1,4 @@
 # "url-pattern","<method>","<spring-access-expression>"
-
 ############## Intercept-url definitions for the WEB transport  URIs ###############
 ## Initial, default value; we don't want this to be open
 ##"/web/**","*","hasAnyRole('ROLE_PSCUser')"
@@ -28,6 +27,13 @@
 "/web/pdo/ConfSvc/talks/SubmitTalks", 		"PUT", "hasAnyRole('ROLE_CONF_ORG')"
 "/web/pdo/ConfSvc/speakers/SubmitSpeakers",	"PUT", "hasAnyRole('ROLE_CONF_ORG')"
 
-# Deny anything not explicitly granted
+## Anyone can read the Catalog
+#################################################
+"/static/ConfSvc","GET","permitAll()" 
+
+## Deny anything not explicitly granted
+#################################################
 "/web/**","*","denyAll()"
+
+
 

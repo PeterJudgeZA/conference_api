@@ -1,0 +1,94 @@
+<project name="DatabaseCreation" basedir="." default="usage">
+    
+	<property environment="env"/>
+	<DlcHome value="${env.DLC}" />
+    <property name="dbDir" value="${basedir}/db"/>
+    
+    <target name="usage" description="Usage Instructions" depends="_init_env">
+        <echo message="${line.separator}Usage Instructions:"/>
+        <echo message="${line.separator}ant create - Create new 'conf' database"/>
+        <echo message="    -Dpath=[PATH] = location for databases (Default: ${path})"/>
+    </target>
+
+    <target name="_init_env">
+        
+        <!-- Check if DLC is set as an environment variable. -->
+        <fail message="$DLC path is not set">
+            <condition>
+                <and>
+                    <not><isset property="dlcHome"/></not>
+                    <not><isset property="env.DLC"/></not>
+                </and>
+            </condition>
+        </fail>
+        <property name="dlcHome" value="${env.DLC}"/>
+        <echo message="DLC Home: ${dlcHome}"/>
+
+        <!-- Determine current operating system in use. -->
+        <echo message="OS Arch: ${os.arch}"/>
+        <condition property="isWin64">
+            <os family="windows"/>
+        </condition>
+        <condition property="isUnix">
+            <os family="unix"/>
+        </condition>
+
+		<!-- Determine script suffix and database location. 
+		
+        <condition property="scriptSuffix" value="sh" else="bat">
+            <os family="unix"/>
+        </condition>
+        <condition property="path" value="/usr/databases" else="C:\Databases">
+            <os family="unix"/>
+        </condition>
+        -->
+    </target>
+
+    <target name="create" depends="_init_env">
+		<taskdef resource="PCT.properties" classpath="${dlcHome}/pct/PCT.jar"/>
+        <PCTVersion/>
+
+		<antcall target="_create_conf"/>
+	</target>
+
+	<target name="_create_conf">
+		<mkdir dir="${path}"/>
+		<mkdir dir="${path}/conference"/>
+
+		<copy toDir="${path}/conference">
+            <fileset dir="${basedir}">
+                <include name="*.st"/>
+            </fileset>
+        </copy>
+
+		<PCTCreateBase dbName="conf" destDir="${dbDir}" dlcHome="${dlcHome}"
+		               blockSize="8" cpInternal="utf-8" largeFiles="false"
+					   structFile="${dbDir}/conf.st" schemaFile="${dbDir}/conf.df">
+		</PCTCreateBase>
+
+		<!--
+			Dumps were made using the following options:
+			numformat=44,46
+			dateformat=mdy-1950
+			map=NO-MAP
+			cpstream=UTF-8
+		-->
+
+		<PCTLoadData srcDir="${dbDir}/data" dlcHome="${dlcHome}"
+            cpStream="UTF-8" cpInternal="UTF-8" NumSep="44" NumDec="46" centuryYearOffset="1950">
+            <Option name="-d" value="mdy"/>
+		    <DBConnection dbName="conf" dbDir="${dbDir}" singleUser="true"/>
+		</PCTLoadData>
+	</target>
+
+	<target name="refresh_data" depends="_init_env">
+		<!-- Deletes all current records and re-loads with default data. -->
+		<taskdef resource="PCT.properties" classpath="${dlcHome}/pct/PCT.jar"/>
+        <PCTVersion/>
+
+		<PCTRun dlcHome="${dlcHome}" procedure="create_records.p" cpInternal="utf-8" cpStream="utf-8">
+		    <DBConnection dbName="conf" dbDir="${path}/conference" singleUser="true"/>
+		</PCTRun>
+	</target>
+
+</project>

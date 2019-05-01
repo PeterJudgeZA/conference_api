@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<module-content version="11.7">
+<module id="cb62deb7-0dcf-45a4-a1b8-c495b2b3111e" name="conference_api">
+<resource path="src\AppServer" publish="true"/>
+</module>
+</module-content>
