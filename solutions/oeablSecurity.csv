@@ -1,5 +1,4 @@
 # "url-pattern","<method>","<spring-access-expression>"
-
 ############## Intercept-url definitions for the WEB transport  URIs ###############
 ## Initial, default value; we don't want this to be open
 ##"/web/**","*","hasAnyRole('ROLE_PSCUser')"
@@ -10,24 +9,30 @@
 # "<url-pattern>","<http-method>","<spring-access-expression>"
 
 ## Anyone can submit a talk or a speaker; anyone can read the submitted talks
-"/web/pdo/ConfSvc/talks",		"GET,POST", "permitAll()"
-"/web/pdo/ConfSvc/speakers",	"GET,POST", "permitAll()"
+"/web/pdo/ConfSvc/talks",       "GET,POST", "permitAll()"
+"/web/pdo/ConfSvc/speakers",    "GET,POST", "permitAll()"
 
 ## Only organisers and speakers can update talks
 #################################################
 ## There is likely to be additional ABL-based authorisation to ensure that a speaker 
 ## can only update their own talks and details
-"/web/pdo/ConfSvc/talks", 		"PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"
-"/web/pdo/ConfSvc/speakers", 	"PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"
+"/web/pdo/ConfSvc/talks",       "PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"
+"/web/pdo/ConfSvc/speakers",    "PUT", "hasAnyRole('ROLE_CONF_ORG, ROLE_SPEAKER')"
 
 # Only organisers can remove/delete a talk or speaker
 "/web/pdo/ConfSvc/talks", "DELETE", "hasAnyRole('ROLE_CONF_ORG')"
 "/web/pdo/ConfSvc/talks", "DELETE", "hasAnyRole('ROLE_CONF_ORG')"
 
 # Only organisers can do bulk updates (SUBMIT) or invokes or anything else
-"/web/pdo/ConfSvc/talks/SubmitTalks", 		"PUT", "hasAnyRole('ROLE_CONF_ORG')"
-"/web/pdo/ConfSvc/speakers/SubmitSpeakers",	"PUT", "hasAnyRole('ROLE_CONF_ORG')"
+"/web/pdo/ConfSvc/talks/SubmitTalks",       "PUT", "hasAnyRole('ROLE_CONF_ORG')"
+"/web/pdo/ConfSvc/speakers/SubmitSpeakers", "PUT", "hasAnyRole('ROLE_CONF_ORG')"
 
-# Deny anything not explicitly granted
+## Anyone can read the Catalog
+#################################################
+"/static/ConfSvc","GET","permitAll()" 
+
+## Deny anything not explicitly granted
+#################################################
 "/web/**","*","denyAll()"
+
 
