@@ -30,17 +30,24 @@ CLASS Conference.SI.Speakers:
     
     METHOD PUBLIC VOID CreateSpeakers(INPUT-OUTPUT DATASET dsSpeaker):
         DEFINE VARIABLE hProc AS HANDLE NO-UNDO.
+        DEFINE QUERY qrySpeaker FOR ttSpeaker.
         
         RUN logic/speaker/new_speaker.p PERSISTENT SET hProc.
         
-        FOR EACH ttSpeaker:
+        // We're using a query here because we update the ID field, which is the 
+        // primary unique value
+        OPEN QUERY qrySpeaker PRESELECT EACH ttSpeaker.   
+        GET FIRST qrySpeaker.
+        DO WHILE AVAILABLE ttSpeaker:
             RUN create_speaker IN hProc (INPUT  ttSpeaker.name,
                                          OUTPUT ttSpeaker.id).
+            GET NEXT qrySpeaker.
         END.
         
         FINALLY:
+            CLOSE QUERY qrySpeaker.
             DELETE OBJECT hProc.
-        END FINALLY.            
+        END FINALLY.
     END METHOD.    
     
     /* Submits are processed in row-state order
